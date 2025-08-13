@@ -92,7 +92,13 @@ class DrawingUtils:
         
         # Calculate text position (midpoint)
         text_x = (start_point[0] + end_point[0]) / 2
-        text_y = (start_point[1] + end_point[1]) / 2 + offset
+        text_y = (start_point[1] + end_point[1]) / 2
+        
+        # Apply offset based on dimension orientation
+        if vertical:
+            text_x += offset  # For vertical dimensions, offset moves text horizontally
+        else:
+            text_y += offset  # For horizontal dimensions, offset moves text vertically
         
         # Add dimension text
         rotation = 90 if vertical else 0
@@ -119,7 +125,13 @@ class DrawingUtils:
         
         # Calculate text position (midpoint)
         text_x = (start_point[0] + end_point[0]) / 2
-        text_y = (start_point[1] + end_point[1]) / 2 + offset
+        text_y = (start_point[1] + end_point[1]) / 2
+        
+        # Apply offset based on dimension orientation
+        if vertical:
+            text_x += offset  # For vertical dimensions, offset moves text horizontally
+        else:
+            text_y += offset  # For horizontal dimensions, offset moves text vertically
         
         # Add dimension text
         rotation = 90 if vertical else 0
