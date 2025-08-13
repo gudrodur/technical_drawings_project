@@ -308,10 +308,10 @@ class DrawingEngine:
         self.utils.add_primary_dimension(ax, (-75, -mb_specs.BASE_PLATE_THICKNESS), (-75, mb_specs.U_ARM_OVERALL_HEIGHT), '200', vertical=True, offset=-3)
         
         # === SECONDARY DIMENSIONS (THICKNESS) ===
-        self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT + 10, -mb_specs.BASE_PLATE_THICKNESS), 
-                                         (mb_specs.BASE_PLATE_RIGHT + 10, 0), '4', vertical=True)
-        self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT - mb_specs.U_ARM_WALL_THICKNESS, mb_specs.U_ARM_OVERALL_HEIGHT + 10), 
-                                         (mb_specs.BASE_PLATE_RIGHT, mb_specs.U_ARM_OVERALL_HEIGHT + 10), '4')
+        self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT + 20, -mb_specs.BASE_PLATE_THICKNESS), 
+                                         (mb_specs.BASE_PLATE_RIGHT + 20, 0), '4', vertical=True, offset=2)
+        self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT - mb_specs.U_ARM_WALL_THICKNESS, mb_specs.U_ARM_OVERALL_HEIGHT + 20), 
+                                         (mb_specs.BASE_PLATE_RIGHT, mb_specs.U_ARM_OVERALL_HEIGHT + 20), '4', offset=2)
         
         # === ADD CENTERLINES ===
         # Base plate centerline
@@ -332,10 +332,10 @@ class DrawingEngine:
         self.utils.add_view_identifier(ax, (mb_specs.BASE_PLATE_RIGHT + 15, mb_specs.U_ARM_OVERALL_HEIGHT - 5), 'A')
         
         # === MATERIAL CALLOUTS ===
-        self.utils.add_material_callout(ax, (0, -mb_specs.BASE_PLATE_THICKNESS/2), 
-                                      '4mm THICK\nSTAINLESS STEEL', (-30, -25), 'yellow')
+        self.utils.add_material_callout(ax, (-10, -mb_specs.BASE_PLATE_THICKNESS/2), 
+                                      '4mm THICK\nSTAINLESS STEEL', (-45, -35), 'yellow')
         self.utils.add_material_callout(ax, (mb_specs.BASE_PLATE_RIGHT - 2, mb_specs.U_ARM_OVERALL_HEIGHT/2), 
-                                      '4mm THICK\nSTAINLESS STEEL', (30, mb_specs.U_ARM_OVERALL_HEIGHT/2 + 30), 'yellow')
+                                      '4mm THICK\nSTAINLESS STEEL', (15, mb_specs.U_ARM_OVERALL_HEIGHT/2 + 50), 'yellow')
         
         # === ASSEMBLY DETAIL ===
         self.utils.add_manufacturing_detail(ax, (mb_specs.BASE_PLATE_RIGHT, 10), 
