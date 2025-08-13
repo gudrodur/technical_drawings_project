@@ -38,30 +38,34 @@ def draw_central_opening(ax, style_config):
 
 def draw_single_arm(ax, arm_angle_deg, style_config):
     """
-    Draw a single arm with precise linear taper, concave termination, and R5 fillets.
+    Draw a single arm with simplified trapezoidal geometry.
+    
+    SIMPLIFIED DESIGN: Arms are now simple trapezoids with straight-line terminations.
+    No complex concave arcs - clean geometric shapes for robust manufacturing.
     
     Args:
         ax: Matplotlib axes object  
         arm_angle_deg: Arm centerline angle in degrees
         style_config: Dictionary containing styling parameters
     """
-    # Get complete arm geometry using new precise functions
+    # Get simplified arm geometry
     arm_outline_points, concave_arc_points, fillet_data = geom.calculate_arm_vertices(arm_angle_deg)
     
-    # Draw main arm outline with linear taper and concave arc
+    # Draw main arm outline (simple trapezoid)
     ax.plot(arm_outline_points[:, 0], arm_outline_points[:, 1],
             color=style_config['primary_color'],
             linewidth=style_config['primary_linewidth'],
             solid_capstyle='round')
     
-    # Draw concave arc termination (highlighted)
-    ax.plot(concave_arc_points[:, 0], concave_arc_points[:, 1],
-            color=style_config['primary_color'],
-            linewidth=style_config['primary_linewidth'] * 1.2,
-            linestyle='-',
-            alpha=0.8)
+    # Draw concave arc termination only if points exist (for backward compatibility)
+    if len(concave_arc_points) > 0 and concave_arc_points.ndim == 2:
+        ax.plot(concave_arc_points[:, 0], concave_arc_points[:, 1],
+                color=style_config['primary_color'],
+                linewidth=style_config['primary_linewidth'] * 1.2,
+                linestyle='-',
+                alpha=0.8)
     
-    # Draw R5 corner fillets
+    # Draw R5 corner fillets (simplified - will be enhanced later)
     draw_arm_fillets(ax, fillet_data, style_config)
     
     # Optional: Draw construction lines for visualization

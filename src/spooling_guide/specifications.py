@@ -28,6 +28,10 @@ ARM_ANGULAR_SPACING = 90.0  # degrees (360° / 4 arms)
 ARM_WIDTH_INNER = 50.0   # mm (width at central opening)
 ARM_WIDTH_OUTER = 100.0  # mm (width at outer ring)
 
+# Arm radial boundaries - CORRECTED FOR RING CLEARANCE
+ARM_INNER_RADIUS = 250.0  # mm (inner boundary at central opening)
+ARM_OUTER_RADIUS = 505.0  # mm (outer boundary - tangent to ring inner surface)
+
 # Concave arc termination at outer edge
 ARM_END_ARC_RADIUS = 532.5  # mm
 
@@ -39,10 +43,10 @@ CENTRAL_HOLE_DIAMETER = 25.0  # mm
 CENTRAL_HOLE_X = 0.0  # mm
 CENTRAL_HOLE_Y = 0.0  # mm
 
-# Inner hole pattern (8 holes on circle)
+# Inner hole pattern (8 holes on circle) - UPDATED FOR COMPONENT COMPATIBILITY
 INNER_HOLE_COUNT = 8
 INNER_HOLE_DIAMETER = 8.0  # mm
-INNER_HOLE_PCD = 360.0  # mm (Pitch Circle Diameter)
+INNER_HOLE_PCD = 90.0  # mm (Pitch Circle Diameter) - CHANGED FROM 360.0 TO MATCH MOUNTING_BRACKET/OBLONG_PLATE
 
 # Outer mounting hole pattern (4 holes aligned with arms)
 OUTER_HOLE_COUNT = 4
@@ -76,5 +80,5 @@ INNER_HOLE_ANGLES = [i * INNER_HOLE_ANGULAR_SPACING for i in range(INNER_HOLE_CO
 # DRAWING SPECIFICATIONS
 # ============================================================================
 DRAWING_SCALE = "1:10"  # Recommended scale for this large component
-DRAWING_TITLE = "SPOOLING GUIDE PLATE"
-DRAWING_VIEW_NAME = "TOP VIEW"
+DRAWING_TITLE = "LÍNUSTÝRING (SPOOLING GUIDE PLATE)"
+DRAWING_VIEW_NAME = "2D Technical Drawing - Side View"

@@ -102,16 +102,16 @@ def add_material_notes(ax):
     note_y = overall_dims['overall_radius'] * 0.8
     
     notes = [
-        f"MATERIAL: {spec.MAIN_PLATE_MATERIAL}",
-        f"OUTER RING: {spec.OUTER_RING_MATERIAL}",
-        f"EDGE FINISH: {spec.EDGE_FINISH}",
-        f"CORNER FILLETS: R{spec.CORNER_FILLET_RADIUS} ({spec.CORNER_FILLET_COUNT} PLACES)",
-        f"CONCAVE ARC RADIUS: R{spec.ARM_END_ARC_RADIUS}",
-        f"TOTAL HOLES: {1 + spec.INNER_HOLE_COUNT + spec.OUTER_HOLE_COUNT}"
+        f"EFNI (MATERIAL): {spec.MAIN_PLATE_MATERIAL}",
+        f"YTRI HRINGUR (OUTER RING): {spec.OUTER_RING_MATERIAL}",
+        f"FRÁGANGUR (FINISH): {spec.EDGE_FINISH}",
+        f"HORNAFLETIR (CORNER FILLETS): R{spec.CORNER_FILLET_RADIUS} ({spec.CORNER_FILLET_COUNT} STAÐIR)",
+        f"INNÍ BOGRÁDIUS (CONCAVE ARC): R{spec.ARM_END_ARC_RADIUS}",
+        f"HEILDARFJÖLDI GATA (TOTAL HOLES): {1 + spec.INNER_HOLE_COUNT + spec.OUTER_HOLE_COUNT}"
     ]
     
     notes_text = '\n'.join(notes)
-    ax.text(note_x, note_y, f"MANUFACTURING NOTES:\n{notes_text}",
+    ax.text(note_x, note_y, f"FRAMLEIÐSLUUPPLÝSINGAR (MANUFACTURING NOTES):\n{notes_text}",
             fontsize=8,
             bbox=dict(boxstyle="round,pad=0.5", 
                      facecolor='lightblue', 
@@ -147,17 +147,17 @@ def create_simple_legend(ax):
         ax: Matplotlib axes object
     """
     legend_elements = [
-        plt.Line2D([0], [0], color='black', linewidth=2, label='Main Plate'),
-        plt.Line2D([0], [0], color='red', marker='o', linewidth=0, markersize=8, label='Holes'),
-        plt.Line2D([0], [0], color='blue', linewidth=2, linestyle='--', label='Outer Ring'),
-        plt.Line2D([0], [0], color='green', linewidth=1, linestyle=':', label='PCD References'),
-        plt.Line2D([0], [0], color='gray', linewidth=1, linestyle='-.', label='Centerlines')
+        plt.Line2D([0], [0], color='black', linewidth=2, label='Aðalplata (Main Plate)'),
+        plt.Line2D([0], [0], color='red', marker='o', linewidth=0, markersize=8, label='Göt (Holes)'),
+        plt.Line2D([0], [0], color='blue', linewidth=2, linestyle='--', label='Ytri hringur (Outer Ring)'),
+        plt.Line2D([0], [0], color='green', linewidth=1, linestyle=':', label='PCD tilvísanir'),
+        plt.Line2D([0], [0], color='gray', linewidth=1, linestyle='-.', label='Miðlínur (Centerlines)')
     ]
     
     ax.legend(handles=legend_elements, 
               loc='upper left',
               fontsize=9,
-              title='COMPONENTS',
+              title='HLUÚTAR (COMPONENTS)',
               title_fontsize=10)
 
 

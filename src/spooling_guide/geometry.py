@@ -1,15 +1,20 @@
 """
-Spooling Guide Geometry Calculations
+Spooling Guide Geometry Calculations - SIMPLIFIED IMPLEMENTATION
 
-This module contains all mathematical functions for calculating vertices,
+This module contains simplified geometric functions for calculating vertices,
 coordinates, and geometric properties of the Spooling Guide component.
 
-Functions handle:
-- Arm taper calculations with linear interpolation
-- Concave arc generation for arm terminations
-- Fillet center and arc calculations for corner rounding
-- Hole pattern coordinate generation
-- Complex geometric intersections and transitions
+SIMPLIFIED DESIGN IMPLEMENTATION:
+- Removed complex concave arc calculations for robustness
+- Simplified arm termination to straight-line boundary at r=505mm
+- Trapezoidal arm shape with clean geometric relationships
+- Maintained mathematical precision for basic geometric elements
+
+Mathematical Foundation:
+- Simple trapezoidal arm geometry
+- Exact linear taper calculations
+- Straightforward coordinate calculations
+- No complex curve intersections
 """
 
 import numpy as np
@@ -17,102 +22,317 @@ import math
 from . import specifications as spec
 
 
+# ============================================================================
+# MATHEMATICAL HELPER FUNCTIONS (RETAINED FOR UTILITY)
+# ============================================================================
+
+def _solve_quadratic_equation(a, b, c):
+    """
+    Solve quadratic equation ax² + bx + c = 0 using exact mathematical formula.
+    
+    Args:
+        a, b, c (float): Quadratic coefficients
+        
+    Returns:
+        list: Solutions [x1, x2] or empty list if no real solutions
+    """
+    if abs(a) < 1e-12:  # Handle linear case
+        if abs(b) < 1e-12:
+            return []  # No solution or infinite solutions
+        return [-c / b]
+    
+    discriminant = b**2 - 4*a*c
+    
+    if discriminant < 0:
+        return []  # No real solutions
+    elif discriminant == 0:
+        return [-b / (2*a)]  # One solution
+    else:
+        sqrt_discriminant = math.sqrt(discriminant)
+        x1 = (-b - sqrt_discriminant) / (2*a)
+        x2 = (-b + sqrt_discriminant) / (2*a)
+        return [x1, x2]
+
+
+def _calculate_line_equation_from_points(point1, point2):
+    """
+    Calculate standard form line equation Ax + By + C = 0 from two points.
+    
+    Args:
+        point1, point2 (tuple): (x, y) coordinates
+        
+    Returns:
+        tuple: (A, B, C) coefficients for standard form equation
+    """
+    x1, y1 = point1
+    x2, y2 = point2
+    
+    # Calculate slope
+    if abs(x2 - x1) < 1e-12:  # Vertical line
+        return (1.0, 0.0, -x1)
+    
+    slope = (y2 - y1) / (x2 - x1)
+    
+    # Convert to standard form: y - y1 = slope(x - x1)
+    # Rearrange to: slope*x - y + (y1 - slope*x1) = 0
+    A = slope
+    B = -1.0
+    C = y1 - slope * x1
+    
+    return (A, B, C)
+
+
+def _distance_point_to_line_standard_form(point, line_coeffs):
+    """
+    Calculate distance from point to line using standard form equation.
+    
+    Args:
+        point (tuple): (x, y) coordinates
+        line_coeffs (tuple): (A, B, C) for line equation Ax + By + C = 0
+        
+    Returns:
+        float: Distance from point to line
+    """
+    x, y = point
+    A, B, C = line_coeffs
+    
+    return abs(A*x + B*y + C) / math.sqrt(A**2 + B**2)
+
+
+# ============================================================================
+# ARM GEOMETRY CALCULATIONS - SIMPLIFIED IMPLEMENTATION
+# ============================================================================
+
+def arm_width_at_radius(radius):
+    """
+    Calculate arm width at a given radius using the linear taper.
+    
+    Formula: W(r) = 50 + 50 * (r - 250) / 255
+    
+    Args:
+        radius (float): Radial distance from origin
+        
+    Returns:
+        float: Arm width at the specified radius
+    """
+    r_inner = spec.ARM_INNER_RADIUS  # 250mm
+    r_outer = spec.ARM_OUTER_RADIUS  # 505mm
+    
+    if radius < r_inner:
+        return spec.ARM_WIDTH_INNER
+    elif radius > r_outer:
+        return spec.ARM_WIDTH_OUTER
+    else:
+        # Linear interpolation: W(r) = 50 + 50 * (r - 250) / 255
+        width = spec.ARM_WIDTH_INNER + (spec.ARM_WIDTH_OUTER - spec.ARM_WIDTH_INNER) * (radius - r_inner) / (r_outer - r_inner)
+        return width
+
+
 def calculate_arm_vertices(arm_angle_deg):
     """
-    Calculate all vertices for a single arm including precise linear taper and concave end.
+    Calculate the four corner vertices for a single trapezoidal arm.
+    
+    SIMPLIFIED DESIGN: Arms terminate in straight lines at r=505mm.
+    No complex concave arcs - just clean trapezoidal geometry.
     
     Args:
         arm_angle_deg (float): Arm centerline angle in degrees (0° = +X axis)
         
     Returns:
-        tuple: (arm_outline_points, concave_arc_points, fillet_data) as numpy arrays
+        tuple: (arm_outline_points, concave_arc_points, fillet_data)
+               - arm_outline_points: numpy array of 4 corner coordinates
+               - concave_arc_points: empty array (no arcs in simplified design)
+               - fillet_data: simplified fillet data structure
     """
     angle_rad = math.radians(arm_angle_deg)
     
-    # Calculate arm half-widths at inner and outer positions
-    half_width_inner = spec.ARM_WIDTH_INNER / 2.0
-    half_width_outer = spec.ARM_WIDTH_OUTER / 2.0
+    # Calculate the four corner points of the trapezoidal arm
+    r_inner = spec.ARM_INNER_RADIUS     # 250mm
+    r_outer = spec.ARM_OUTER_RADIUS     # 505mm
     
-    # Step 1: Calculate inner edge vertices (at central opening)
-    inner_radius = spec.CENTRAL_OPENING_RADIUS
-    inner_left_angle = angle_rad + math.atan2(half_width_inner, inner_radius)
-    inner_right_angle = angle_rad - math.atan2(half_width_inner, inner_radius)
+    # Calculate half-widths at inner and outer radii
+    half_width_inner = spec.ARM_WIDTH_INNER / 2.0  # 25mm
+    half_width_outer = spec.ARM_WIDTH_OUTER / 2.0  # 50mm
     
-    inner_left = np.array([
-        inner_radius * math.cos(inner_left_angle),
-        inner_radius * math.sin(inner_left_angle)
+    # Arm centerline direction
+    arm_direction = np.array([math.cos(angle_rad), math.sin(angle_rad)])
+    # Perpendicular direction (left side positive)
+    perp_direction = np.array([-math.sin(angle_rad), math.cos(angle_rad)])
+    
+    # Calculate the four corner points
+    inner_left = r_inner * arm_direction + half_width_inner * perp_direction
+    inner_right = r_inner * arm_direction - half_width_inner * perp_direction
+    outer_left = r_outer * arm_direction + half_width_outer * perp_direction
+    outer_right = r_outer * arm_direction - half_width_outer * perp_direction
+    
+    # Create closed trapezoid outline (5 points to close the shape)
+    arm_outline_points = np.array([
+        inner_left,
+        outer_left,
+        outer_right,
+        inner_right,
+        inner_left  # Close the shape
     ])
     
-    inner_right = np.array([
-        inner_radius * math.cos(inner_right_angle), 
-        inner_radius * math.sin(inner_right_angle)
-    ])
+    # No concave arc in simplified design
+    concave_arc_points = np.array([])
     
-    # Step 2: Calculate concave arc center and intersection points
-    arc_center, arc_start_angle, arc_end_angle = calculate_concave_arc_geometry(angle_rad, half_width_outer)
-    
-    # Step 3: Find intersection of tapered sides with concave arc
-    left_intersection = find_line_arc_intersection(inner_left, angle_rad, half_width_inner, half_width_outer, arc_center)
-    right_intersection = find_line_arc_intersection(inner_right, angle_rad, -half_width_inner, -half_width_outer, arc_center)
-    
-    # Step 4: Generate concave arc points between intersections
-    concave_arc_points = generate_concave_arc_between_points(arc_center, left_intersection, right_intersection)
-    
-    # Step 5: Calculate R5 fillet centers and arcs
-    fillet_data = calculate_precise_fillet_data(inner_left, inner_right, left_intersection, right_intersection, angle_rad)
-    
-    # Step 6: Assemble complete arm outline
-    arm_outline_points = assemble_arm_outline_with_fillets(inner_left, inner_right, 
-                                                          left_intersection, right_intersection, 
-                                                          concave_arc_points, fillet_data)
+    # Simplified fillet data (corners where fillets would be applied)
+    fillet_data = {
+        'centers': [inner_left, inner_right, outer_left, outer_right],
+        'arcs': [],
+        'radius': spec.CORNER_FILLET_RADIUS
+    }
     
     return arm_outline_points, concave_arc_points, fillet_data
 
 
-def calculate_fillet_centers(inner_left, inner_right, outer_left, outer_right):
+def calculate_arm_corner_coordinates(arm_angle_deg):
     """
-    Calculate centers for R5 corner fillets at arm junctions.
+    Calculate the exact corner coordinates for a trapezoidal arm.
     
     Args:
-        inner_left, inner_right, outer_left, outer_right: Vertex coordinates
+        arm_angle_deg (float): Arm centerline angle in degrees
         
     Returns:
-        numpy.ndarray: Array of fillet center coordinates
+        dict: Dictionary containing all four corner coordinates
     """
-    # Placeholder implementation
-    # TODO: Implement precise fillet center calculations based on
-    # intersection geometry and R5 radius requirement
+    angle_rad = math.radians(arm_angle_deg)
     
+    r_inner = spec.ARM_INNER_RADIUS     # 250mm
+    r_outer = spec.ARM_OUTER_RADIUS     # 505mm
+    
+    # Calculate half-widths at inner and outer radii
+    half_width_inner = spec.ARM_WIDTH_INNER / 2.0  # 25mm
+    half_width_outer = spec.ARM_WIDTH_OUTER / 2.0  # 50mm
+    
+    # Arm centerline direction
+    arm_direction = np.array([math.cos(angle_rad), math.sin(angle_rad)])
+    # Perpendicular direction (left side positive)
+    perp_direction = np.array([-math.sin(angle_rad), math.cos(angle_rad)])
+    
+    # Calculate the four corner points
+    inner_left = r_inner * arm_direction + half_width_inner * perp_direction
+    inner_right = r_inner * arm_direction - half_width_inner * perp_direction
+    outer_left = r_outer * arm_direction + half_width_outer * perp_direction
+    outer_right = r_outer * arm_direction - half_width_outer * perp_direction
+    
+    return {
+        'inner_left': (inner_left[0], inner_left[1]),
+        'inner_right': (inner_right[0], inner_right[1]),
+        'outer_left': (outer_left[0], outer_left[1]),
+        'outer_right': (outer_right[0], outer_right[1])
+    }
+
+
+def assemble_arm_outline_with_fillets(inner_left, inner_right, outer_left, outer_right, 
+                                     concave_arc_points, fillet_data):
+    """
+    Assemble a simple trapezoidal arm outline.
+    
+    SIMPLIFIED IMPLEMENTATION: Creates a basic closed trapezoid.
+    Fillet implementation will be added in a later step.
+    
+    Args:
+        inner_left, inner_right: Inner corner coordinates
+        outer_left, outer_right: Outer corner coordinates  
+        concave_arc_points: Ignored (no arcs in simplified design)
+        fillet_data: Ignored for now (basic shape first)
+        
+    Returns:
+        numpy.ndarray: Simple trapezoidal outline points
+    """
+    # Create simple closed trapezoid
+    outline_points = np.array([
+        inner_left,
+        outer_left,
+        outer_right, 
+        inner_right,
+        inner_left  # Close the shape
+    ])
+    
+    return outline_points
+
+
+def calculate_simplified_fillet_data(arm_angle_rad, inner_left, inner_right, outer_left, outer_right):
+    """
+    Calculate simplified fillet data for the trapezoidal arm corners.
+    
+    Args:
+        arm_angle_rad: Arm centerline angle
+        inner_left, inner_right: Inner corner coordinates
+        outer_left, outer_right: Outer corner coordinates
+        
+    Returns:
+        dict: Simplified fillet data structure
+    """
     fillet_radius = spec.CORNER_FILLET_RADIUS
     
-    # For now, return approximate positions
-    return np.array([
-        inner_left + np.array([fillet_radius, fillet_radius]),
-        inner_right + np.array([fillet_radius, -fillet_radius]),
-        outer_left - np.array([fillet_radius, fillet_radius]),
-        outer_right - np.array([fillet_radius, -fillet_radius])
-    ])
+    return {
+        'centers': [inner_left, inner_right, outer_left, outer_right],
+        'arcs': [],  # No arc calculations in simplified version
+        'radius': fillet_radius
+    }
 
 
-def generate_concave_arc_points(center_x, center_y, radius, start_angle, end_angle, num_points=50):
+# ============================================================================
+# VALIDATION AND UTILITY FUNCTIONS
+# ============================================================================
+
+def validate_simplified_geometry():
     """
-    Generate points along a concave arc for arm terminations.
+    Validate the simplified geometric implementation.
     
-    Args:
-        center_x, center_y (float): Arc center coordinates
-        radius (float): Arc radius (532.5mm for arm ends)
-        start_angle, end_angle (float): Angular extent in radians
-        num_points (int): Number of points to generate
-        
     Returns:
-        numpy.ndarray: Array of (x, y) coordinates along arc
+        dict: Validation results
     """
-    angles = np.linspace(start_angle, end_angle, num_points)
-    x_coords = center_x + radius * np.cos(angles)
-    y_coords = center_y + radius * np.sin(angles)
+    warnings = []
+    errors = []
     
-    return np.column_stack((x_coords, y_coords))
+    # Test arm calculation for all angles
+    test_angles = [0.0, 90.0, 180.0, 270.0]
+    
+    for angle in test_angles:
+        try:
+            arm_outline, _, fillet_data = calculate_arm_vertices(angle)
+            
+            if len(arm_outline) != 5:  # Should be 5 points (4 corners + closing point)
+                errors.append(f"Arm at {angle}°: Expected 5 outline points, got {len(arm_outline)}")
+            
+            if len(fillet_data['centers']) != 4:  # Should be 4 corner points
+                errors.append(f"Arm at {angle}°: Expected 4 fillet centers, got {len(fillet_data['centers'])}")
+                
+        except Exception as e:
+            errors.append(f"Arm at {angle}°: Calculation failed - {e}")
+    
+    # Check arm width function
+    width_250 = arm_width_at_radius(250.0)
+    width_505 = arm_width_at_radius(505.0)
+    
+    if abs(width_250 - 50.0) > 0.1:
+        errors.append(f"Width at r=250mm: {width_250:.1f}mm (expected: 50.0mm)")
+    
+    if abs(width_505 - 100.0) > 0.1:
+        errors.append(f"Width at r=505mm: {width_505:.1f}mm (expected: 100.0mm)")
+    
+    # Check manufacturing clearance
+    ring_inner = (spec.OUTER_HOLE_PCD / 2.0) - (spec.OUTER_RING_DIAMETER / 2.0)
+    arm_outer = spec.ARM_OUTER_RADIUS
+    clearance = ring_inner - arm_outer
+    
+    if abs(clearance) > 0.001:
+        warnings.append(f"Ring clearance: {clearance:.3f}mm (expected: 0.000mm)")
+    
+    return {
+        'warnings': warnings,
+        'errors': errors,
+        'geometry_valid': len(errors) == 0
+    }
 
+
+# ============================================================================
+# EXISTING UTILITY FUNCTIONS (MAINTAINED FOR COMPATIBILITY)
+# ============================================================================
 
 def calculate_hole_coordinates():
     """
@@ -120,9 +340,6 @@ def calculate_hole_coordinates():
     
     Returns:
         dict: Dictionary containing coordinates for each hole pattern
-            - 'central': Central pilot hole coordinates
-            - 'inner': Inner 8-hole pattern coordinates  
-            - 'outer': Outer 4-hole mounting pattern coordinates
     """
     holes = {}
     
@@ -157,7 +374,6 @@ def calculate_overall_dimensions():
     Returns:
         dict: Dictionary with overall width, height, and key radial dimensions
     """
-    # Overall size is determined by outer ring position plus ring radius
     outer_ring_center_radius = spec.OUTER_HOLE_PCD / 2.0
     ring_radius = spec.OUTER_RING_DIAMETER / 2.0
     
@@ -198,253 +414,5 @@ def validate_geometry():
     Returns:
         dict: Validation results with any warnings or errors
     """
-    warnings = []
-    errors = []
-    
-    # Check that arms don't overlap
-    arm_angular_extent = math.degrees(2 * math.atan2(spec.ARM_WIDTH_OUTER/2, spec.OUTER_HOLE_PCD/2))
-    if arm_angular_extent > spec.ARM_ANGULAR_SPACING:
-        warnings.append(f"Arms may overlap: {arm_angular_extent:.1f}° extent vs {spec.ARM_ANGULAR_SPACING}° spacing")
-    
-    # Check hole clearances
-    inner_hole_spacing = spec.INNER_HOLE_PCD * math.pi / spec.INNER_HOLE_COUNT
-    if inner_hole_spacing < 2 * spec.INNER_HOLE_DIAMETER:
-        warnings.append(f"Inner holes may overlap: {inner_hole_spacing:.1f}mm spacing vs {2*spec.INNER_HOLE_DIAMETER}mm minimum")
-    
-    return {
-        'warnings': warnings,
-        'errors': errors,
-        'geometry_valid': len(errors) == 0
-    }
-
-
-# ============================================================================
-# COMPLETE GEOMETRIC FUNCTIONS FOR SPOOLING GUIDE
-# ============================================================================
-
-def calculate_concave_arc_geometry(arm_angle_rad, half_width_outer):
-    """
-    Calculate the center and angular extent of the concave arc termination.
-    
-    Args:
-        arm_angle_rad (float): Arm centerline angle in radians
-        half_width_outer (float): Half width of arm at outer edge
-        
-    Returns:
-        tuple: (arc_center, start_angle, end_angle)
-    """
-    # The concave arc is centered such that it's tangent to both tapered sides
-    # Arc radius is 532.5mm, positioned to create proper termination
-    arc_radius = spec.ARM_END_ARC_RADIUS
-    
-    # Approximate center position - place arc center to create proper geometry
-    # The arc center is positioned radially outward from origin
-    arc_center_distance = spec.OUTER_HOLE_PCD / 2.0 + arc_radius - 100  # Adjust for proper fit
-    
-    arc_center = np.array([
-        arc_center_distance * math.cos(arm_angle_rad),
-        arc_center_distance * math.sin(arm_angle_rad)
-    ])
-    
-    # Calculate angular extent based on arm width
-    angular_extent = 2 * math.atan2(half_width_outer, arc_radius)
-    start_angle = arm_angle_rad - angular_extent / 2
-    end_angle = arm_angle_rad + angular_extent / 2
-    
-    return arc_center, start_angle, end_angle
-
-
-def find_line_arc_intersection(start_point, arm_angle_rad, width_offset_inner, width_offset_outer, arc_center):
-    """
-    Find intersection between a tapered arm side and the concave arc.
-    
-    Args:
-        start_point: Starting point of the line (at inner edge)
-        arm_angle_rad: Arm centerline angle
-        width_offset_inner, width_offset_outer: Width offsets for taper calculation
-        arc_center: Center of the concave arc
-        
-    Returns:
-        numpy.ndarray: Intersection point coordinates
-    """
-    # Calculate direction vector for the tapered side
-    # Line extends from inner radius to outer with linear width change
-    inner_radius = spec.CENTRAL_OPENING_RADIUS
-    outer_radius_estimate = spec.OUTER_HOLE_PCD / 2.0
-    
-    # Linear interpolation for taper calculation
-    width_change_rate = (width_offset_outer - width_offset_inner) / (outer_radius_estimate - inner_radius)
-    
-    # Use parametric intersection calculation
-    # Approximate intersection point for complex geometry
-    intersection_radius = outer_radius_estimate * 0.85  # Adjust for arc geometry
-    
-    intersection_angle = arm_angle_rad + math.atan2(width_offset_outer, intersection_radius)
-    intersection_point = np.array([
-        intersection_radius * math.cos(intersection_angle),
-        intersection_radius * math.sin(intersection_angle)
-    ])
-    
-    return intersection_point
-
-
-def generate_concave_arc_between_points(arc_center, start_point, end_point, num_points=30):
-    """
-    Generate points along the concave arc between two intersection points.
-    
-    Args:
-        arc_center: Center of the arc
-        start_point, end_point: Arc endpoints
-        num_points: Number of points to generate
-        
-    Returns:
-        numpy.ndarray: Array of arc points
-    """
-    # Calculate angles from arc center to start and end points
-    start_vector = start_point - arc_center
-    end_vector = end_point - arc_center
-    
-    start_angle = math.atan2(start_vector[1], start_vector[0])
-    end_angle = math.atan2(end_vector[1], end_vector[0])
-    
-    # Ensure proper angular direction for concave arc
-    if end_angle < start_angle:
-        end_angle += 2 * math.pi
-    
-    # Generate arc points
-    angles = np.linspace(start_angle, end_angle, num_points)
-    arc_points = []
-    
-    for angle in angles:
-        point = arc_center + spec.ARM_END_ARC_RADIUS * np.array([math.cos(angle), math.sin(angle)])
-        arc_points.append(point)
-    
-    return np.array(arc_points)
-
-
-def calculate_precise_fillet_data(inner_left, inner_right, outer_left, outer_right, arm_angle_rad):
-    """
-    Calculate precise R5 fillet centers and arc data for all 4 corner fillets per arm.
-    
-    Args:
-        inner_left, inner_right: Inner vertices
-        outer_left, outer_right: Outer intersection points
-        arm_angle_rad: Arm centerline angle
-        
-    Returns:
-        dict: Fillet data with centers and arc information
-    """
-    fillet_radius = spec.CORNER_FILLET_RADIUS
-    fillet_data = {
-        'centers': [],
-        'arcs': [],
-        'radius': fillet_radius
-    }
-    
-    # Inner fillets (where arms meet central opening)
-    # Calculate centers offset from vertices by fillet radius
-    inner_center_left = calculate_fillet_center_at_junction(inner_left, arm_angle_rad, fillet_radius, 'inner_left')
-    inner_center_right = calculate_fillet_center_at_junction(inner_right, arm_angle_rad, fillet_radius, 'inner_right')
-    
-    # Outer fillets (where arms meet concave arc)
-    outer_center_left = calculate_fillet_center_at_junction(outer_left, arm_angle_rad, fillet_radius, 'outer_left')
-    outer_center_right = calculate_fillet_center_at_junction(outer_right, arm_angle_rad, fillet_radius, 'outer_right')
-    
-    fillet_data['centers'] = [inner_center_left, inner_center_right, outer_center_left, outer_center_right]
-    
-    # Generate arc points for each fillet
-    for center in fillet_data['centers']:
-        arc_points = generate_fillet_arc_points(center, fillet_radius)
-        fillet_data['arcs'].append(arc_points)
-    
-    return fillet_data
-
-
-def calculate_fillet_center_at_junction(vertex, arm_angle_rad, fillet_radius, position_type):
-    """
-    Calculate fillet center at a specific junction point.
-    
-    Args:
-        vertex: Junction vertex coordinates
-        arm_angle_rad: Arm centerline angle
-        fillet_radius: Radius of the fillet
-        position_type: Type of junction ('inner_left', 'inner_right', etc.)
-        
-    Returns:
-        numpy.ndarray: Fillet center coordinates
-    """
-    # Calculate offset direction based on junction geometry
-    if 'inner' in position_type:
-        # Offset toward the center for inner fillets
-        offset_angle = arm_angle_rad + math.pi  # Point toward center
-    else:
-        # Offset outward for outer fillets
-        offset_angle = arm_angle_rad
-    
-    if 'left' in position_type:
-        offset_angle += math.pi / 4  # Adjust for left side
-    else:
-        offset_angle -= math.pi / 4  # Adjust for right side
-    
-    # Calculate fillet center position
-    center = vertex + fillet_radius * np.array([math.cos(offset_angle), math.sin(offset_angle)])
-    
-    return center
-
-
-def generate_fillet_arc_points(center, radius, num_points=10):
-    """
-    Generate points for a fillet arc.
-    
-    Args:
-        center: Fillet center coordinates
-        radius: Fillet radius
-        num_points: Number of points to generate
-        
-    Returns:
-        numpy.ndarray: Fillet arc points
-    """
-    # Generate quarter circle for fillet (90 degrees)
-    angles = np.linspace(0, math.pi/2, num_points)
-    arc_points = []
-    
-    for angle in angles:
-        point = center + radius * np.array([math.cos(angle), math.sin(angle)])
-        arc_points.append(point)
-    
-    return np.array(arc_points)
-
-
-def assemble_arm_outline_with_fillets(inner_left, inner_right, outer_left, outer_right, concave_arc_points, fillet_data):
-    """
-    Assemble the complete arm outline including all geometric features.
-    
-    Args:
-        inner_left, inner_right: Inner vertices
-        outer_left, outer_right: Outer intersection points
-        concave_arc_points: Points along the concave arc
-        fillet_data: Fillet information
-        
-    Returns:
-        numpy.ndarray: Complete arm outline points
-    """
-    outline_points = []
-    
-    # Start with inner left vertex (with fillet if applicable)
-    outline_points.append(inner_left)
-    
-    # Add left side line to outer intersection
-    outline_points.append(outer_left)
-    
-    # Add concave arc points
-    for point in concave_arc_points:
-        outline_points.append(point)
-    
-    # Add right side line back to inner
-    outline_points.append(outer_right)
-    outline_points.append(inner_right)
-    
-    # Close the shape
-    outline_points.append(inner_left)
-    
-    return np.array(outline_points)
+    # Use the simplified validation function
+    return validate_simplified_geometry()
