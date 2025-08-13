@@ -338,8 +338,8 @@ class DrawingEngine:
                                       '4mm THICK\nSTAINLESS STEEL', (15, mb_specs.U_ARM_OVERALL_HEIGHT/2 + 50), 'yellow')
         
         # === ASSEMBLY DETAIL ===
-        self.utils.add_manufacturing_detail(ax, (mb_specs.BASE_PLATE_RIGHT, 10), 
-                                          'FLUSH WITH\nBACK EDGE', (mb_specs.BASE_PLATE_RIGHT + 25, 40), 'red')
+        self.utils.add_manufacturing_detail(ax, (mb_specs.BASE_PLATE_LEFT, 5), 
+                                          'FLUSH WITH\nBACK EDGE', (mb_specs.BASE_PLATE_LEFT + 25, 40), 'red')
         
         # === PROFESSIONAL LEGEND ===
         legend_items = [
