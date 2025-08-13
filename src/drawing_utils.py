@@ -447,6 +447,78 @@ class DrawingUtils:
         ax.set_title(title_with_scale, fontsize=self.style.FONT_SIZES['title'], 
                     fontweight='bold')
     
+    def draw_double_d_hole(self, ax, center_x, center_y, overall_diameter, flat_width,
+                          color=None, linewidth=None, fill=False):
+        """
+        Draw a Double-D hole (stadium-shaped hole with parallel flats).
+        
+        Args:
+            ax: Matplotlib axis object
+            center_x: X coordinate of hole center
+            center_y: Y coordinate of hole center
+            overall_diameter: Overall diameter of the hole
+            flat_width: Width between parallel flats
+            color: Line color (default from style)
+            linewidth: Line weight (default from style)
+            fill: Whether to fill the hole (default False)
+        """
+        if color is None:
+            color = self.style.COLORS['holes_pcd']
+        if linewidth is None:
+            linewidth = self.style.LINE_WEIGHTS['hole_outlines']
+            
+        # Calculate geometry
+        radius = overall_diameter / 2
+        flat_half_width = flat_width / 2
+        
+        # Draw the Double-D shape
+        if flat_half_width < radius:
+            # Calculate the height of the curved portions
+            curve_height = np.sqrt(radius**2 - flat_half_width**2)
+            
+            # Create the complete Double-D profile
+            angles_right = np.linspace(-np.arcsin(flat_half_width/radius), 
+                                     np.arcsin(flat_half_width/radius), 25)
+            angles_left = np.linspace(np.pi - np.arcsin(flat_half_width/radius), 
+                                    np.pi + np.arcsin(flat_half_width/radius), 25)
+            
+            # Right semicircle
+            right_x = center_x + radius * np.cos(angles_right)
+            right_y = center_y + radius * np.sin(angles_right)
+            
+            # Left semicircle  
+            left_x = center_x + radius * np.cos(angles_left)
+            left_y = center_y + radius * np.sin(angles_left)
+            
+            # Top and bottom flats
+            flat_top_y = center_y + curve_height
+            flat_bottom_y = center_y - curve_height
+            
+            # Combine into complete closed profile
+            x_coords = np.concatenate([
+                right_x,
+                [center_x + flat_half_width, center_x + flat_half_width],
+                left_x[::-1],
+                [center_x - flat_half_width, center_x - flat_half_width]
+            ])
+            
+            y_coords = np.concatenate([
+                right_y,
+                [flat_top_y, flat_bottom_y],
+                left_y[::-1],
+                [flat_bottom_y, flat_top_y]
+            ])
+            
+            if fill:
+                ax.fill(x_coords, y_coords, color=color, alpha=0.3)
+            ax.plot(x_coords, y_coords, color=color, linewidth=linewidth)
+        else:
+            # If flat width >= radius, just draw a circle
+            circle = plt.Circle((center_x, center_y), radius, 
+                              fill=fill, color=color, linewidth=linewidth)
+            ax.add_patch(circle)
+    
+    
     # === LEGACY COMPATIBILITY FUNCTIONS ===
     
     def add_dimension_line(self, ax, start_point, end_point, label, vertical=False, offset=0):

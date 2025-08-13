@@ -20,6 +20,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from specifications import mounting_bracket as mb_specs
+from specifications import oblong_plate as op_specs
 from src.drawing_utils import DrawingUtils
 
 
@@ -45,6 +46,19 @@ class DrawingEngine:
         self._draw_mounting_bracket_front_view()
         
         print("✓ All mounting bracket views generated with professional quality")
+    
+    def draw_oblong_plate(self):
+        """
+        Generate complete professional drawing set for stadium-shaped oblong plate.
+        Creates: Top View and Side View with gold standard quality.
+        """
+        print("Generating professional oblong plate drawings...")
+        
+        # Generate both views with enhanced features
+        self._draw_oblong_plate_top_view()
+        self._draw_oblong_plate_side_view()
+        
+        print("✓ All oblong plate views generated with professional quality")
     
     def _draw_mounting_bracket_side_view(self):
         """Generate enhanced side view of mounting bracket (U-arm profile)."""
@@ -367,6 +381,188 @@ class DrawingEngine:
         
         plt.tight_layout()
         self._save_drawing(fig, 'mounting_bracket_front_view')
+        plt.close()
+    
+    def _draw_oblong_plate_top_view(self):
+        """Generate enhanced top view of stadium-shaped oblong plate."""
+        fig, ax = plt.subplots(1, 1, figsize=(16, 10), dpi=100)
+        
+        # === DRAW STADIUM OUTLINE ===
+        # Central rectangle
+        rect_corners = [
+            (op_specs.CENTRAL_RECT_LEFT, op_specs.STADIUM_TOP_EDGE),
+            (op_specs.CENTRAL_RECT_RIGHT, op_specs.STADIUM_TOP_EDGE),
+            (op_specs.CENTRAL_RECT_RIGHT, op_specs.STADIUM_BOTTOM_EDGE),
+            (op_specs.CENTRAL_RECT_LEFT, op_specs.STADIUM_BOTTOM_EDGE),
+            (op_specs.CENTRAL_RECT_LEFT, op_specs.STADIUM_TOP_EDGE)
+        ]
+        
+        rect_x = [corner[0] for corner in rect_corners]
+        rect_y = [corner[1] for corner in rect_corners]
+        ax.plot(rect_x, rect_y, color=self.utils.style.COLORS['primary_lines'], 
+                linewidth=self.utils.style.LINE_WEIGHTS['main_outline'], 
+                label='Stadium Outline')
+        
+        # Left semicircle
+        theta_left = np.linspace(np.pi/2, 3*np.pi/2, 100)
+        left_semi_x = op_specs.CENTRAL_RECT_LEFT + op_specs.END_RADIUS * np.cos(theta_left)
+        left_semi_y = 0 + op_specs.END_RADIUS * np.sin(theta_left)
+        ax.plot(left_semi_x, left_semi_y, color=self.utils.style.COLORS['primary_lines'], 
+                linewidth=self.utils.style.LINE_WEIGHTS['main_outline'])
+        
+        # Right semicircle  
+        theta_right = np.linspace(-np.pi/2, np.pi/2, 100)
+        right_semi_x = op_specs.CENTRAL_RECT_RIGHT + op_specs.END_RADIUS * np.cos(theta_right)
+        right_semi_y = 0 + op_specs.END_RADIUS * np.sin(theta_right)
+        ax.plot(right_semi_x, right_semi_y, color=self.utils.style.COLORS['primary_lines'], 
+                linewidth=self.utils.style.LINE_WEIGHTS['main_outline'])
+        
+        # === DRAW CIRCULAR HOLES (8 per group) ===
+        # Left group holes
+        for x_pos, y_pos in op_specs.LEFT_GROUP_HOLES:
+            circle = plt.Circle((x_pos, y_pos), op_specs.CIRCULAR_HOLE_DIAMETER/2, 
+                              fill=False, color=self.utils.style.COLORS['holes_pcd'], 
+                              linewidth=self.utils.style.LINE_WEIGHTS['hole_outlines'])
+            ax.add_patch(circle)
+            
+            # Add coordinate label
+            coord_label = f'({x_pos:+.0f}, {y_pos:+.0f})'
+            self.utils.add_coordinate_label(ax, (x_pos, y_pos), coord_label)
+        
+        # Right group holes
+        for x_pos, y_pos in op_specs.RIGHT_GROUP_HOLES:
+            circle = plt.Circle((x_pos, y_pos), op_specs.CIRCULAR_HOLE_DIAMETER/2, 
+                              fill=False, color=self.utils.style.COLORS['holes_pcd'], 
+                              linewidth=self.utils.style.LINE_WEIGHTS['hole_outlines'])
+            ax.add_patch(circle)
+            
+            # Add coordinate label
+            coord_label = f'({x_pos:+.0f}, {y_pos:+.0f})'
+            self.utils.add_coordinate_label(ax, (x_pos, y_pos), coord_label)
+        
+        # === DRAW DOUBLE-D HOLES ===
+        self.utils.draw_double_d_hole(ax, op_specs.LEFT_DOUBLE_D_CENTER[0], op_specs.LEFT_DOUBLE_D_CENTER[1],
+                                     op_specs.DOUBLE_D_OVERALL_DIAMETER, op_specs.DOUBLE_D_FLAT_WIDTH)
+        self.utils.draw_double_d_hole(ax, op_specs.RIGHT_DOUBLE_D_CENTER[0], op_specs.RIGHT_DOUBLE_D_CENTER[1],
+                                     op_specs.DOUBLE_D_OVERALL_DIAMETER, op_specs.DOUBLE_D_FLAT_WIDTH)
+        
+        # === ADD PCD VISUALIZATION ===
+        self.utils.add_pcd_visualization(ax, op_specs.HOLE_GROUP_LEFT_X, 0, 
+                                       op_specs.CIRCULAR_HOLE_PCD_RADIUS, 'PCD 90')
+        self.utils.add_pcd_visualization(ax, op_specs.HOLE_GROUP_RIGHT_X, 0, 
+                                       op_specs.CIRCULAR_HOLE_PCD_RADIUS, 'PCD 90')
+        
+        # === PRIMARY DIMENSIONS ===
+        self.utils.add_primary_dimension(ax, (op_specs.STADIUM_LEFT_END, -80), 
+                                       (op_specs.STADIUM_RIGHT_END, -80), '330', offset=3)
+        self.utils.add_primary_dimension(ax, (-190, op_specs.STADIUM_BOTTOM_EDGE), 
+                                       (-190, op_specs.STADIUM_TOP_EDGE), '120', vertical=True, offset=-3)
+        
+        # === SECONDARY DIMENSIONS ===
+        # Hole group spacing
+        self.utils.add_secondary_dimension(ax, (op_specs.HOLE_GROUP_LEFT_X, -55), 
+                                         (op_specs.HOLE_GROUP_RIGHT_X, -55), '190', offset=3)
+        
+        # === ADD PROFESSIONAL CENTERLINES ===
+        self.utils.add_professional_centerlines(ax, 0, 0, 400)
+        
+        # === MATERIAL CALLOUTS ===
+        self.utils.add_material_callout(ax, (0, 40), 
+                                      '4mm THICK\nSTAINLESS STEEL', (-50, 90), 'yellow')
+        
+        # === PROFESSIONAL LEGEND ===
+        legend_items = [
+            {'type': 'line', 'color': self.utils.style.COLORS['primary_lines'], 
+             'linewidth': self.utils.style.LINE_WEIGHTS['main_outline'], 'label': 'Stadium Outline'},
+            {'type': 'line', 'color': self.utils.style.COLORS['holes_pcd'], 
+             'linewidth': self.utils.style.LINE_WEIGHTS['hole_outlines'], 'label': '⌀ 8 Holes (8x per group)'},
+            {'type': 'line', 'color': self.utils.style.COLORS['slot_lines'], 
+             'linewidth': self.utils.style.LINE_WEIGHTS['feature_lines'], 'label': 'Double-D Holes (2x)'},
+            {'type': 'line', 'color': self.utils.style.COLORS['centerlines'], 
+             'linewidth': self.utils.style.LINE_WEIGHTS['centerlines'], 'linestyle': '--', 'label': 'Centerlines'},
+            {'type': 'line', 'color': self.utils.style.COLORS['secondary_dims'], 
+             'linewidth': self.utils.style.LINE_WEIGHTS['centerlines'], 'linestyle': '--', 'label': 'PCD 90 (2x)'}
+        ]
+        self.utils.create_professional_legend(ax, legend_items, position='upper right', bbox_to_anchor=(1, 1))
+        
+        # === DRAWING SETUP ===
+        title_with_scale = self.utils.add_scale_to_title('OBLONG PLATE - TOP VIEW (STADIUM SHAPE)\n4mm Stainless Steel', '1:2')
+        self.utils.format_professional_layout(ax, title_with_scale, (-200, 200), (-110, 110), 'X (mm)', 'Y (mm)')
+        
+        # === COMPREHENSIVE TECHNICAL NOTES ===
+        manufacturing_details = [
+            'Two identical hole groups at X = ±95mm',
+            '8x ⌀8mm holes per group on PCD 90',
+            '2x Double-D holes ⌀25mm overall, 20mm flats',
+            'Stadium shape: central rectangle + semicircular ends'
+        ]
+        self.utils.add_comprehensive_notes(ax, op_specs.MATERIAL, (120, -90), manufacturing_details)
+        
+        plt.tight_layout()
+        self._save_drawing(fig, 'oblong_plate_top_view')
+        plt.close()
+    
+    def _draw_oblong_plate_side_view(self):
+        """Generate enhanced side view of stadium-shaped oblong plate (thickness profile)."""
+        fig, ax = plt.subplots(1, 1, figsize=(12, 8), dpi=100)
+        
+        # === DRAW PLATE THICKNESS PROFILE ===
+        profile_corners = [
+            (op_specs.STADIUM_LEFT_END, -op_specs.PLATE_THICKNESS),
+            (op_specs.STADIUM_RIGHT_END, -op_specs.PLATE_THICKNESS),
+            (op_specs.STADIUM_RIGHT_END, 0),
+            (op_specs.STADIUM_LEFT_END, 0),
+            (op_specs.STADIUM_LEFT_END, -op_specs.PLATE_THICKNESS)
+        ]
+        
+        profile_x = [corner[0] for corner in profile_corners]
+        profile_y = [corner[1] for corner in profile_corners]
+        ax.fill(profile_x, profile_y, color=self.utils.style.COLORS['base_plate_fill'], 
+                alpha=self.utils.style.ALPHA['fills'], label='Plate Profile')
+        ax.plot(profile_x, profile_y, color=self.utils.style.COLORS['primary_lines'], 
+                linewidth=self.utils.style.LINE_WEIGHTS['feature_lines'])
+        
+        # === PRIMARY DIMENSIONS ===
+        self.utils.add_primary_dimension(ax, (op_specs.STADIUM_LEFT_END, -15), 
+                                       (op_specs.STADIUM_RIGHT_END, -15), '330', offset=3)
+        
+        # === SECONDARY DIMENSIONS ===
+        self.utils.add_secondary_dimension(ax, (op_specs.STADIUM_RIGHT_END + 10, -op_specs.PLATE_THICKNESS), 
+                                         (op_specs.STADIUM_RIGHT_END + 10, 0), '4', vertical=True, offset=3)
+        
+        # === ADD CENTERLINES ===
+        ax.plot([op_specs.STADIUM_LEFT_END - 20, op_specs.STADIUM_RIGHT_END + 20], [0, 0], 
+                color=self.utils.style.COLORS['centerlines'], linestyle='--', 
+                linewidth=self.utils.style.LINE_WEIGHTS['centerlines'], 
+                alpha=self.utils.style.ALPHA['centerlines'], label='Centerlines')
+        
+        # === MATERIAL CALLOUTS ===
+        self.utils.add_material_callout(ax, (0, -op_specs.PLATE_THICKNESS/2), 
+                                      '4mm THICK\nSTAINLESS STEEL', (-80, -15), 'yellow')
+        
+        # === PROFESSIONAL LEGEND ===
+        legend_items = [
+            {'type': 'fill', 'color': self.utils.style.COLORS['base_plate_fill'], 
+             'alpha': self.utils.style.ALPHA['fills'], 'edgecolor': 'black', 'label': 'Plate Profile'},
+            {'type': 'line', 'color': self.utils.style.COLORS['centerlines'], 
+             'linewidth': self.utils.style.LINE_WEIGHTS['centerlines'], 'linestyle': '--', 'label': 'Centerlines'}
+        ]
+        self.utils.create_professional_legend(ax, legend_items, position='upper left', bbox_to_anchor=(0, 1))
+        
+        # === DRAWING SETUP ===
+        title_with_scale = self.utils.add_scale_to_title('OBLONG PLATE - SIDE VIEW (THICKNESS PROFILE)\n4mm Stainless Steel', '1:2')
+        self.utils.format_professional_layout(ax, title_with_scale, (-200, 200), (-25, 15), 'X (mm)', 'Z (mm)')
+        
+        # === COMPREHENSIVE TECHNICAL NOTES ===
+        manufacturing_details = [
+            'Stadium-shaped profile (330 x 120mm)',
+            'Edge finish: sharp as-cut',
+            'Uniform 4mm thickness'
+        ]
+        self.utils.add_comprehensive_notes(ax, op_specs.MATERIAL, (-180, 10), manufacturing_details)
+        
+        plt.tight_layout()
+        self._save_drawing(fig, 'oblong_plate_side_view')
         plt.close()
     
     def _save_drawing(self, fig, filename):

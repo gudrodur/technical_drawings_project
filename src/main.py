@@ -41,7 +41,7 @@ class TechnicalDrawingGenerator:
         print("\nAvailable Components:")
         
         # Filter only implemented components
-        implemented_components = ['mounting_bracket']  # Add more as implemented
+        implemented_components = ['mounting_bracket', 'oblong_plate']  # Add more as implemented
         
         for i, component in enumerate(implemented_components, 1):
             print(f"  {i}. {component.replace('_', ' ').title()}")
@@ -51,7 +51,7 @@ class TechnicalDrawingGenerator:
     
     def get_user_choice(self):
         """Get and validate user's component selection."""
-        implemented_components = ['mounting_bracket']  # Keep in sync with display_menu
+        implemented_components = ['mounting_bracket', 'oblong_plate']  # Keep in sync with display_menu
         
         while True:
             try:
@@ -78,6 +78,9 @@ class TechnicalDrawingGenerator:
             if component_name == 'mounting_bracket':
                 self.drawing_engine.draw_mounting_bracket()
                 print("✓ Mounting bracket drawings generated successfully!")
+            elif component_name == 'oblong_plate':
+                self.drawing_engine.draw_oblong_plate()
+                print("✓ Oblong plate drawings generated successfully!")
             else:
                 print(f"Error: Drawing function for '{component_name}' not yet implemented.")
                 return False
