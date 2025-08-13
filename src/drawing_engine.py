@@ -308,10 +308,10 @@ class DrawingEngine:
         self.utils.add_primary_dimension(ax, (-75, -mb_specs.BASE_PLATE_THICKNESS), (-75, mb_specs.U_ARM_OVERALL_HEIGHT), '200', vertical=True, offset=-3)
         
         # === SECONDARY DIMENSIONS (THICKNESS) ===
-        self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT + 20, -mb_specs.BASE_PLATE_THICKNESS), 
-                                         (mb_specs.BASE_PLATE_RIGHT + 20, 0), '4', vertical=True, offset=2)
-        self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT - mb_specs.U_ARM_WALL_THICKNESS, mb_specs.U_ARM_OVERALL_HEIGHT + 20), 
-                                         (mb_specs.BASE_PLATE_RIGHT, mb_specs.U_ARM_OVERALL_HEIGHT + 20), '4', offset=2)
+        self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT + 5, -mb_specs.BASE_PLATE_THICKNESS), 
+                                         (mb_specs.BASE_PLATE_RIGHT + 5, 0), '4', vertical=True, offset=2)
+        self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT - mb_specs.U_ARM_WALL_THICKNESS, mb_specs.U_ARM_OVERALL_HEIGHT + 5), 
+                                         (mb_specs.BASE_PLATE_RIGHT, mb_specs.U_ARM_OVERALL_HEIGHT + 5), '4', offset=3)
         
         # === ADD CENTERLINES ===
         # Base plate centerline
