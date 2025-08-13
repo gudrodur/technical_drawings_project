@@ -214,8 +214,8 @@ class DrawingEngine:
             self.utils.add_coordinate_label(ax, (x_pos, y_pos), coord_label)
         
         # === PRIMARY DIMENSIONS ===
-        self.utils.add_primary_dimension(ax, (-60, 70), (60, 70), '120')
-        self.utils.add_primary_dimension(ax, (70, -60), (70, 60), '120', vertical=True)
+        self.utils.add_primary_dimension(ax, (-60, 70), (60, 70), '120', offset=3)
+        self.utils.add_primary_dimension(ax, (70, -60), (70, 60), '120', vertical=True, offset=-3)
         
         # === SECONDARY DIMENSIONS (HOLE SPACING) ===
         # Row spacing
@@ -304,8 +304,8 @@ class DrawingEngine:
         self.utils.draw_weld_symbol(ax, (mb_specs.BASE_PLATE_RIGHT - mb_specs.U_ARM_WALL_THICKNESS, 0))
         
         # === PRIMARY DIMENSIONS ===
-        self.utils.add_primary_dimension(ax, (mb_specs.BASE_PLATE_LEFT, -15), (mb_specs.BASE_PLATE_RIGHT, -15), '120')
-        self.utils.add_primary_dimension(ax, (-75, -mb_specs.BASE_PLATE_THICKNESS), (-75, mb_specs.U_ARM_OVERALL_HEIGHT), '200', vertical=True)
+        self.utils.add_primary_dimension(ax, (mb_specs.BASE_PLATE_LEFT, -15), (mb_specs.BASE_PLATE_RIGHT, -15), '120', offset=3)
+        self.utils.add_primary_dimension(ax, (-75, -mb_specs.BASE_PLATE_THICKNESS), (-75, mb_specs.U_ARM_OVERALL_HEIGHT), '200', vertical=True, offset=-3)
         
         # === SECONDARY DIMENSIONS (THICKNESS) ===
         self.utils.add_secondary_dimension(ax, (mb_specs.BASE_PLATE_RIGHT + 10, -mb_specs.BASE_PLATE_THICKNESS), 
