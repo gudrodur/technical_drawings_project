@@ -148,14 +148,14 @@ class DrawingEngine:
         
         # === DRAWING SETUP ===
         title_with_scale = self.utils.add_scale_to_title('MOUNTING BRACKET - SIDE VIEW\n4mm Stainless Steel', '1:2')
-        self.utils.format_professional_layout(ax, title_with_scale, (-90, 90), (-30, 230), 'X (mm)', 'Z (mm)')
+        self.utils.format_professional_layout(ax, title_with_scale, (-90, 90), (-30, 240), 'X (mm)', 'Z (mm)')
         
         # === COMPREHENSIVE TECHNICAL NOTES ===
         manufacturing_details = [
             'U-arm welded to base plate',
             'Origin at plate center'
         ]
-        self.utils.add_comprehensive_notes(ax, mb_specs.MATERIAL, (-80, 220), manufacturing_details)
+        self.utils.add_comprehensive_notes(ax, mb_specs.MATERIAL, (-75, 230), manufacturing_details)
         
         plt.tight_layout()
         self._save_drawing(fig, 'mounting_bracket_side_view')
