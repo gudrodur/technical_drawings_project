@@ -332,8 +332,8 @@ class DrawingEngine:
         self.utils.add_view_identifier(ax, (mb_specs.BASE_PLATE_RIGHT + 15, mb_specs.U_ARM_OVERALL_HEIGHT - 5), 'A')
         
         # === MATERIAL CALLOUTS ===
-        self.utils.add_material_callout(ax, (0, 20), 
-                                      '4mm THICK\nSTAINLESS STEEL', (-30, 80), 'yellow')
+        self.utils.add_material_callout(ax, (-20, 0), 
+                                      '4mm THICK\nSTAINLESS STEEL', (-30, 30), 'yellow')
         self.utils.add_material_callout(ax, (mb_specs.BASE_PLATE_RIGHT - 2, mb_specs.U_ARM_OVERALL_HEIGHT/2), 
                                       '4mm THICK\nSTAINLESS STEEL', (15, mb_specs.U_ARM_OVERALL_HEIGHT/2 + 50), 'yellow')
         
