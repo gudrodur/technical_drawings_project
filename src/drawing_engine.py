@@ -503,7 +503,7 @@ class DrawingEngine:
             '2x ⌀25mm center holes',
             'Stadium shape: central rectangle + semicircular ends'
         ]
-        self.utils.add_comprehensive_notes(ax, op_specs.MATERIAL, (120, -90), manufacturing_details)
+        self.utils.add_comprehensive_notes(ax, op_specs.MATERIAL, (0, 105), manufacturing_details)
         
         plt.tight_layout()
         self._save_drawing(fig, 'oblong_plate_top_view')
