@@ -127,9 +127,9 @@ class DrawingEngine:
                                    mb_specs.CENTER_SLOT_OVERALL_DIAMETER, mb_specs.CENTER_SLOT_FLAT_WIDTH)
         
         # === PROFESSIONAL DIMENSIONS ===
-        # Primary dimensions
-        self.utils.add_primary_dimension(ax, (-75, 0), (-75, mb_specs.U_ARM_OVERALL_HEIGHT), '200', vertical=True)
-        self.utils.add_primary_dimension(ax, (-60, -15), (60, -15), '120')
+        # Primary dimensions with slight label offset
+        self.utils.add_primary_dimension(ax, (-75, 0), (-75, mb_specs.U_ARM_OVERALL_HEIGHT), '200', vertical=True, offset=5)
+        self.utils.add_primary_dimension(ax, (-60, -15), (60, -15), '120', offset=3)
         
         # === PROFESSIONAL LEGEND ===
         legend_items = [
