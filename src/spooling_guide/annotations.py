@@ -93,11 +93,6 @@ def add_arm_annotations(ax):
                 xytext=(spec.ARM_OUTER_RADIUS - 150, spec.ARM_WIDTH_OUTER + 30),
                 arrowprops=dict(arrowstyle='->', color='black'),
                 fontsize=9, ha='left')
-    
-    # Concave arc radius annotation (kept as reference)
-    ax.annotate(f'R{spec.ARM_END_ARC_RADIUS} CONCAVE ARC (LEGACY)', 
-                xy=(400, 400),
-                fontsize=8, fontweight='bold', color='purple', alpha=0.6)
 
 
 def add_material_notes(ax):
