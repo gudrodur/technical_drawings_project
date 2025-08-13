@@ -28,9 +28,34 @@ from . import geometry as geom
 from . import drawing_components as components
 from . import annotations
 
-# Import shared utilities from top-level
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from drawing_utils import save_drawing_files
+
+def save_drawing_files(fig, base_filename, output_directory):
+    """
+    Save drawing files in PNG and SVG formats.
+    
+    Args:
+        fig: Matplotlib figure object
+        base_filename: Base name for output files
+        output_directory: Directory to save files
+    """
+    import os
+    
+    # Create output directories if they don't exist
+    png_dir = os.path.join(output_directory, 'png')
+    svg_dir = os.path.join(output_directory, 'svg')
+    
+    os.makedirs(png_dir, exist_ok=True)
+    os.makedirs(svg_dir, exist_ok=True)
+    
+    # Save PNG (high resolution)
+    png_path = os.path.join(png_dir, f"{base_filename}.png")
+    fig.savefig(png_path, dpi=300, bbox_inches='tight', facecolor='white')
+    print(f"Saved PNG: {png_path}")
+    
+    # Save SVG (vector format)
+    svg_path = os.path.join(svg_dir, f"{base_filename}.svg")
+    fig.savefig(svg_path, format='svg', bbox_inches='tight', facecolor='white')
+    print(f"Saved SVG: {svg_path}")
 
 
 def create_style_configuration():
