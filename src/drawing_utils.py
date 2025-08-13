@@ -169,8 +169,8 @@ class DrawingUtils:
                           linestyle='--', alpha=self.style.ALPHA['centerlines'])
         ax.add_patch(circle_pcd)
         
-        # Add PCD label - positioned on right side near hole for clarity, bold text
-        ax.text(center_x + radius + 15, center_y, label, ha='left', va='center', 
+        # Add PCD label - positioned where plus symbol appears for optimal placement
+        ax.text(center_x + 30, center_y - 10, label, ha='left', va='center', 
                fontsize=self.style.FONT_SIZES['annotations'], fontweight='bold',
                color=self.style.COLORS['centerlines'])
     
