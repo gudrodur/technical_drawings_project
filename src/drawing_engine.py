@@ -258,7 +258,7 @@ class DrawingEngine:
             '6x ⌀8mm mounting holes',
             'U-arm welded to back edge'
         ]
-        self.utils.add_comprehensive_notes(ax, mb_specs.MATERIAL, (60, -75), manufacturing_details)
+        self.utils.add_comprehensive_notes(ax, mb_specs.MATERIAL, (50, -65), manufacturing_details)
         
         plt.tight_layout()
         self._save_drawing(fig, 'mounting_bracket_top_view')
