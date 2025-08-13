@@ -46,13 +46,14 @@ def add_hole_annotations(ax):
     """
     hole_coords = geom.calculate_hole_coordinates()
     
-    # Central hole annotation
-    central_coord = hole_coords['central'][0]
+    # Central hole annotation - ARROW POINTS TO CROSSHAIR CENTER
+    central_coord = hole_coords['central'][0]  # This is (0, 0)
     ax.annotate(f'⌀{spec.CENTRAL_HOLE_DIAMETER} PILOT HOLE', 
-                xy=(central_coord[0], central_coord[1]),
-                xytext=(80, 80),
-                arrowprops=dict(arrowstyle='->', color='red'),
-                fontsize=9, color='red')
+                xy=(0, 0),  # Point directly at the crosshair center
+                xytext=(120, 60),  # Position text away from center for clarity
+                arrowprops=dict(arrowstyle='->', color='red', lw=1.5),
+                fontsize=10, color='red', fontweight='bold',
+                ha='left', va='bottom')
     
     # Inner holes annotation (show one example)
     inner_coord = hole_coords['inner'][0]

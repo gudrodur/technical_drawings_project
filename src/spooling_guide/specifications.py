@@ -39,7 +39,7 @@ ARM_END_ARC_RADIUS = 532.5  # mm
 # HOLE SPECIFICATIONS
 # ============================================================================
 # Central pilot hole
-CENTRAL_HOLE_DIAMETER = 25.0  # mm
+CENTRAL_HOLE_DIAMETER = 30.0  # mm - UPDATED FROM 25.0
 CENTRAL_HOLE_X = 0.0  # mm
 CENTRAL_HOLE_Y = 0.0  # mm
 
