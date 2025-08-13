@@ -440,11 +440,20 @@ class DrawingEngine:
             coord_label = f'({x_pos:+.0f}, {y_pos:+.0f})'
             self.utils.add_coordinate_label(ax, (x_pos, y_pos), coord_label)
         
-        # === DRAW DOUBLE-D HOLES ===
-        self.utils.draw_double_d_hole(ax, op_specs.LEFT_DOUBLE_D_CENTER[0], op_specs.LEFT_DOUBLE_D_CENTER[1],
-                                     op_specs.DOUBLE_D_OVERALL_DIAMETER, op_specs.DOUBLE_D_FLAT_WIDTH)
-        self.utils.draw_double_d_hole(ax, op_specs.RIGHT_DOUBLE_D_CENTER[0], op_specs.RIGHT_DOUBLE_D_CENTER[1],
-                                     op_specs.DOUBLE_D_OVERALL_DIAMETER, op_specs.DOUBLE_D_FLAT_WIDTH)
+        # === DRAW CENTER HOLES (25mm diameter) ===
+        # Left center hole
+        left_circle = plt.Circle((op_specs.LEFT_DOUBLE_D_CENTER[0], op_specs.LEFT_DOUBLE_D_CENTER[1]), 
+                                op_specs.DOUBLE_D_OVERALL_DIAMETER/2, 
+                                fill=False, color=self.utils.style.COLORS['holes_pcd'], 
+                                linewidth=self.utils.style.LINE_WEIGHTS['hole_outlines'])
+        ax.add_patch(left_circle)
+        
+        # Right center hole  
+        right_circle = plt.Circle((op_specs.RIGHT_DOUBLE_D_CENTER[0], op_specs.RIGHT_DOUBLE_D_CENTER[1]), 
+                                 op_specs.DOUBLE_D_OVERALL_DIAMETER/2, 
+                                 fill=False, color=self.utils.style.COLORS['holes_pcd'], 
+                                 linewidth=self.utils.style.LINE_WEIGHTS['hole_outlines'])
+        ax.add_patch(right_circle)
         
         # === ADD PCD VISUALIZATION ===
         self.utils.add_pcd_visualization(ax, op_specs.HOLE_GROUP_LEFT_X, 0, 
@@ -476,8 +485,8 @@ class DrawingEngine:
              'linewidth': self.utils.style.LINE_WEIGHTS['main_outline'], 'label': 'Stadium Outline'},
             {'type': 'line', 'color': self.utils.style.COLORS['holes_pcd'], 
              'linewidth': self.utils.style.LINE_WEIGHTS['hole_outlines'], 'label': '⌀ 8 Holes (8x per group)'},
-            {'type': 'line', 'color': self.utils.style.COLORS['slot_lines'], 
-             'linewidth': self.utils.style.LINE_WEIGHTS['feature_lines'], 'label': 'Double-D Holes (2x)'},
+            {'type': 'line', 'color': self.utils.style.COLORS['holes_pcd'], 
+             'linewidth': self.utils.style.LINE_WEIGHTS['hole_outlines'], 'label': '⌀ 25 Center Holes (2x)'},
             {'type': 'line', 'color': self.utils.style.COLORS['centerlines'], 
              'linewidth': self.utils.style.LINE_WEIGHTS['centerlines'], 'linestyle': '--', 'label': 'Centerlines'},
             {'type': 'line', 'color': self.utils.style.COLORS['secondary_dims'], 
@@ -493,7 +502,7 @@ class DrawingEngine:
         manufacturing_details = [
             'Two identical hole groups at X = ±95mm',
             '8x ⌀8mm holes per group on PCD 90',
-            '2x Double-D holes ⌀25mm overall, 20mm flats',
+            '2x ⌀25mm center holes',
             'Stadium shape: central rectangle + semicircular ends'
         ]
         self.utils.add_comprehensive_notes(ax, op_specs.MATERIAL, (120, -90), manufacturing_details)

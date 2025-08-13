@@ -52,9 +52,11 @@ CIRCULAR_HOLE_PCD_RADIUS = CIRCULAR_HOLE_PCD / 2  # 45mm
 # 8 holes evenly spaced on PCD (45° intervals)
 CIRCULAR_HOLE_ANGLES = [0, 45, 90, 135, 180, 225, 270, 315]  # degrees
 
-# === DOUBLE-D HOLES (1 per group) ===
-DOUBLE_D_OVERALL_DIAMETER = 25  # mm
-DOUBLE_D_FLAT_TO_FLAT = 20      # mm - Width between parallel flats
+# === CENTER HOLES (1 per group) ===
+CENTER_HOLE_DIAMETER = 25  # mm - Simple circular holes
+# Legacy Double-D compatibility names (now just circular)
+DOUBLE_D_OVERALL_DIAMETER = CENTER_HOLE_DIAMETER  # 25mm
+DOUBLE_D_FLAT_TO_FLAT = 20      # mm - No longer used (legacy compatibility)
 DOUBLE_D_FLAT_WIDTH = DOUBLE_D_FLAT_TO_FLAT  # Compatibility alias
 DOUBLE_D_FLAT_HEIGHT = (DOUBLE_D_OVERALL_DIAMETER**2 - (DOUBLE_D_FLAT_TO_FLAT/2)**2)**0.5 * 2  # Calculated height
 
@@ -99,6 +101,9 @@ for angle in CIRCULAR_HOLE_ANGLES:
     y = 0 + CIRCULAR_HOLE_PCD_RADIUS * np.sin(angle_rad)
     RIGHT_GROUP_HOLES.append((x, y))
 
-# === DOUBLE-D HOLE CENTERS ===
-LEFT_DOUBLE_D_CENTER = (HOLE_GROUP_LEFT_X, 0)   # (-95, 0)
-RIGHT_DOUBLE_D_CENTER = (HOLE_GROUP_RIGHT_X, 0)  # (+95, 0)
+# === CENTER HOLE CENTERS ===
+LEFT_CENTER_HOLE_CENTER = (HOLE_GROUP_LEFT_X, 0)   # (-95, 0)
+RIGHT_CENTER_HOLE_CENTER = (HOLE_GROUP_RIGHT_X, 0)  # (+95, 0)
+# Legacy Double-D compatibility aliases
+LEFT_DOUBLE_D_CENTER = LEFT_CENTER_HOLE_CENTER
+RIGHT_DOUBLE_D_CENTER = RIGHT_CENTER_HOLE_CENTER
