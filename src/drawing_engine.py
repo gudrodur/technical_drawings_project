@@ -545,30 +545,9 @@ class DrawingEngine:
                 linewidth=self.utils.style.LINE_WEIGHTS['centerlines'], 
                 alpha=self.utils.style.ALPHA['centerlines'], label='Centerlines')
         
-        # === MATERIAL CALLOUTS ===
-        self.utils.add_material_callout(ax, (0, -op_specs.PLATE_THICKNESS/2), 
-                                      '4mm THICK\nSTAINLESS STEEL', (-80, -15), 'yellow')
-        
-        # === PROFESSIONAL LEGEND ===
-        legend_items = [
-            {'type': 'fill', 'color': self.utils.style.COLORS['base_plate_fill'], 
-             'alpha': self.utils.style.ALPHA['fills'], 'edgecolor': 'black', 'label': 'Plate Profile'},
-            {'type': 'line', 'color': self.utils.style.COLORS['centerlines'], 
-             'linewidth': self.utils.style.LINE_WEIGHTS['centerlines'], 'linestyle': '--', 'label': 'Centerlines'}
-        ]
-        self.utils.create_professional_legend(ax, legend_items, position='upper left', bbox_to_anchor=(0, 1))
-        
         # === DRAWING SETUP ===
         title_with_scale = self.utils.add_scale_to_title('OBLONG PLATE - SIDE VIEW (THICKNESS PROFILE)\n4mm Stainless Steel', '1:2')
         self.utils.format_professional_layout(ax, title_with_scale, (-200, 200), (-25, 15), 'X (mm)', 'Z (mm)')
-        
-        # === COMPREHENSIVE TECHNICAL NOTES ===
-        manufacturing_details = [
-            'Stadium-shaped profile (330 x 120mm)',
-            'Edge finish: sharp as-cut',
-            'Uniform 4mm thickness'
-        ]
-        self.utils.add_comprehensive_notes(ax, op_specs.MATERIAL, (-180, 10), manufacturing_details)
         
         plt.tight_layout()
         self._save_drawing(fig, 'oblong_plate_side_view')
