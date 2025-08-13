@@ -155,7 +155,7 @@ class DrawingEngine:
             'U-arm welded to base plate',
             'Origin at plate center'
         ]
-        self.utils.add_comprehensive_notes(ax, mb_specs.MATERIAL, (-75, 180), manufacturing_details)
+        self.utils.add_comprehensive_notes(ax, mb_specs.MATERIAL, (-85, 210), manufacturing_details)
         
         plt.tight_layout()
         self._save_drawing(fig, 'mounting_bracket_side_view')
@@ -363,7 +363,7 @@ class DrawingEngine:
             'U-arm flush with back edge',
             'Profile view Section A-A'
         ]
-        self.utils.add_comprehensive_notes(ax, mb_specs.MATERIAL, (-85, 220), manufacturing_details)
+        self.utils.add_comprehensive_notes(ax, mb_specs.MATERIAL, (-75, 190), manufacturing_details)
         
         plt.tight_layout()
         self._save_drawing(fig, 'mounting_bracket_front_view')
