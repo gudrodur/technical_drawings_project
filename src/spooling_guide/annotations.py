@@ -7,6 +7,7 @@ using standard matplotlib functionality for reliable rendering.
 
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 import sys
 import os
 
@@ -21,10 +22,10 @@ def add_basic_dimensions(ax):
     Args:
         ax: Matplotlib axes object
     """
-    # Central opening radius dimension
+    # Central opening radius dimension - CORRECTED to point to actual edge
     ax.annotate(f'R{spec.CENTRAL_OPENING_RADIUS}', 
-                xy=(spec.CENTRAL_OPENING_RADIUS/2, 0),
-                xytext=(spec.CENTRAL_OPENING_RADIUS/2 + 100, 50),
+                xy=(spec.CENTRAL_OPENING_RADIUS, 0),  # FIXED: Point to (250, 0) actual edge
+                xytext=(spec.CENTRAL_OPENING_RADIUS + 100, 50),
                 arrowprops=dict(arrowstyle='->', color='black'),
                 fontsize=10, fontweight='bold')
     
@@ -74,21 +75,29 @@ def add_hole_annotations(ax):
 
 def add_arm_annotations(ax):
     """
-    Add arm geometry annotations.
+    Add arm geometry annotations with proper dimensioning.
     
     Args:
         ax: Matplotlib axes object
     """
-    # Arm width annotations
-    y_pos = spec.CENTRAL_OPENING_RADIUS + 50
-    ax.annotate(f'{spec.ARM_WIDTH_INNER}mm', 
-                xy=(0, y_pos),
-                fontsize=9, ha='center')
+    # Inner arm width dimension at central opening (more specific)
+    ax.annotate(f'{spec.ARM_WIDTH_INNER}mm WIDTH @ R{spec.ARM_INNER_RADIUS}', 
+                xy=(spec.ARM_INNER_RADIUS, spec.ARM_WIDTH_INNER/4),  # Point to arm edge
+                xytext=(spec.ARM_INNER_RADIUS + 80, spec.ARM_WIDTH_INNER + 50),
+                arrowprops=dict(arrowstyle='->', color='black'),
+                fontsize=9, ha='left')
     
-    # Concave arc radius annotation
-    ax.annotate(f'R{spec.ARM_END_ARC_RADIUS} CONCAVE ARC', 
+    # Outer arm width at outer radius
+    ax.annotate(f'{spec.ARM_WIDTH_OUTER}mm WIDTH @ R{spec.ARM_OUTER_RADIUS}', 
+                xy=(spec.ARM_OUTER_RADIUS, spec.ARM_WIDTH_OUTER/4),  # Point to arm edge
+                xytext=(spec.ARM_OUTER_RADIUS - 150, spec.ARM_WIDTH_OUTER + 30),
+                arrowprops=dict(arrowstyle='->', color='black'),
+                fontsize=9, ha='left')
+    
+    # Concave arc radius annotation (kept as reference)
+    ax.annotate(f'R{spec.ARM_END_ARC_RADIUS} CONCAVE ARC (LEGACY)', 
                 xy=(400, 400),
-                fontsize=9, fontweight='bold', color='purple')
+                fontsize=8, fontweight='bold', color='purple', alpha=0.6)
 
 
 def add_material_notes(ax):
