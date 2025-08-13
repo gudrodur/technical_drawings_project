@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+
+# Project Output Directories (excluding main drawings)
+output/
+output_final/
+output_professional/
+output_*/
+temp_drawings/
+
+# Keep main drawings/ directory but ignore temporary outputs
+# drawings/ - KEPT for project deliverables
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary and Log Files
+*.tmp
+*.temp
+*.log
+*.bak
+
+# Virtual Environments
+venv/
+virtualenv/
+.env
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+docs/_build/
