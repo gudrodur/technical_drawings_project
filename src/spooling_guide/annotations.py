@@ -68,7 +68,7 @@ def add_hole_annotations(ax):
     outer_coord = hole_coords['outer'][0]
     ax.annotate(f'{spec.OUTER_HOLE_COUNT}× ⌀{spec.OUTER_HOLE_DIAMETER} ON ⌀{spec.OUTER_HOLE_PCD} PCD', 
                 xy=(outer_coord[0], outer_coord[1]),
-                xytext=(300, 300),
+                xytext=(-200, 300),  # Moved to left side to avoid overlaps
                 arrowprops=dict(arrowstyle='->', color='green'),
                 fontsize=9, color='green')
 

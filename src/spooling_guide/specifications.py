@@ -51,7 +51,7 @@ INNER_HOLE_PCD = 90.0  # mm (Pitch Circle Diameter) - CHANGED FROM 360.0 TO MATC
 # Outer mounting hole pattern (4 holes aligned with arms)
 OUTER_HOLE_COUNT = 4
 OUTER_HOLE_DIAMETER = 8.0  # mm
-OUTER_HOLE_PCD = 1020.0  # mm (Pitch Circle Diameter)
+OUTER_HOLE_PCD = 990.0  # mm (Pitch Circle Diameter)
 
 # ============================================================================
 # FINISHING SPECIFICATIONS
