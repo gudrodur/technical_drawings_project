@@ -99,7 +99,7 @@ def draw_hole_pattern(ax, hole_type, style_config):
     if hole_type == 'central':
         coords = hole_coords['central']
         diameter = spec.CENTRAL_HOLE_DIAMETER
-        color = style_config['hole_color']
+        color = '#FFFF00'  # Yellow for central pilot hole
         label = f'Central Hole ⌀{diameter}mm'
         
     elif hole_type == 'inner':

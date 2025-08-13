@@ -50,16 +50,16 @@ def add_hole_annotations(ax):
     central_coord = hole_coords['central'][0]  # This is (0, 0)
     ax.annotate(f'⌀{spec.CENTRAL_HOLE_DIAMETER} PILOT HOLE', 
                 xy=(0, 0),  # Point directly at the crosshair center
-                xytext=(120, 60),  # Position text away from center for clarity
-                arrowprops=dict(arrowstyle='->', color='red', lw=1.5),
-                fontsize=10, color='red', fontweight='bold',
+                xytext=(100, -45),  # Position text away from center for clarity (moved y -20)
+                arrowprops=dict(arrowstyle='->', color='yellow', lw=1.5),
+                fontsize=10, color='yellow', fontweight='bold',
                 ha='left', va='bottom')
     
     # Inner holes annotation (show one example)
     inner_coord = hole_coords['inner'][0]
     ax.annotate(f'{spec.INNER_HOLE_COUNT}× ⌀{spec.INNER_HOLE_DIAMETER} ON ⌀{spec.INNER_HOLE_PCD} PCD', 
                 xy=(inner_coord[0], inner_coord[1]),
-                xytext=(200, 200),
+                xytext=(80, 40),
                 arrowprops=dict(arrowstyle='->', color='blue'),
                 fontsize=9, color='blue')
     
