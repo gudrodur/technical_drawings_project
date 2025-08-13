@@ -169,9 +169,9 @@ class DrawingUtils:
                           linestyle='--', alpha=self.style.ALPHA['centerlines'])
         ax.add_patch(circle_pcd)
         
-        # Add PCD label - positioned on left side for better readability
-        ax.text(center_x - radius - 5, center_y, label, ha='right', va='center', 
-               fontsize=self.style.FONT_SIZES['annotations'], 
+        # Add PCD label - positioned on right side near hole for clarity, bold text
+        ax.text(center_x + radius + 15, center_y, label, ha='left', va='center', 
+               fontsize=self.style.FONT_SIZES['annotations'], fontweight='bold',
                color=self.style.COLORS['centerlines'])
     
     def add_material_callout(self, ax, point, text, leader_end, callout_style='yellow'):
