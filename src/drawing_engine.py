@@ -388,20 +388,18 @@ class DrawingEngine:
         fig, ax = plt.subplots(1, 1, figsize=(16, 10), dpi=100)
         
         # === DRAW STADIUM OUTLINE ===
-        # Central rectangle
-        rect_corners = [
-            (op_specs.CENTRAL_RECT_LEFT, op_specs.STADIUM_TOP_EDGE),
-            (op_specs.CENTRAL_RECT_RIGHT, op_specs.STADIUM_TOP_EDGE),
-            (op_specs.CENTRAL_RECT_RIGHT, op_specs.STADIUM_BOTTOM_EDGE),
-            (op_specs.CENTRAL_RECT_LEFT, op_specs.STADIUM_BOTTOM_EDGE),
-            (op_specs.CENTRAL_RECT_LEFT, op_specs.STADIUM_TOP_EDGE)
-        ]
-        
-        rect_x = [corner[0] for corner in rect_corners]
-        rect_y = [corner[1] for corner in rect_corners]
-        ax.plot(rect_x, rect_y, color=self.utils.style.COLORS['primary_lines'], 
+        # Top horizontal line (central rectangle top edge)
+        ax.plot([op_specs.CENTRAL_RECT_LEFT, op_specs.CENTRAL_RECT_RIGHT], 
+                [op_specs.STADIUM_TOP_EDGE, op_specs.STADIUM_TOP_EDGE], 
+                color=self.utils.style.COLORS['primary_lines'], 
                 linewidth=self.utils.style.LINE_WEIGHTS['main_outline'], 
                 label='Stadium Outline')
+        
+        # Bottom horizontal line (central rectangle bottom edge)
+        ax.plot([op_specs.CENTRAL_RECT_LEFT, op_specs.CENTRAL_RECT_RIGHT], 
+                [op_specs.STADIUM_BOTTOM_EDGE, op_specs.STADIUM_BOTTOM_EDGE], 
+                color=self.utils.style.COLORS['primary_lines'], 
+                linewidth=self.utils.style.LINE_WEIGHTS['main_outline'])
         
         # Left semicircle
         theta_left = np.linspace(np.pi/2, 3*np.pi/2, 100)
