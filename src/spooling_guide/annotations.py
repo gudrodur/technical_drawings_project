@@ -104,7 +104,7 @@ def add_material_notes(ax):
         ax: Matplotlib axes object
     """
     overall_dims = geom.calculate_overall_dimensions()
-    note_x = overall_dims['overall_radius'] * 0.9   # Further right
+    note_x = overall_dims['overall_radius'] * 1.0   # A bit more to the right
     note_y = overall_dims['overall_radius'] * 1.0   # Further up
     
     notes = [
