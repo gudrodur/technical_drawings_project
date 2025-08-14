@@ -298,8 +298,12 @@ def draw_centerlines(ax, style_config):
                linestyle='-.', alpha=0.5, 
                xmin=0.1, xmax=0.9)  # Don't extend to edges
     
-    # Arm centerlines
+    # Arm centerlines (exclude 90° and 270° to prevent vertical centerline)
     for angle_deg in spec.ARM_ANGLES:
+        # Skip 90° and 270° angles to eliminate vertical centerline
+        if angle_deg in [90, 270]:
+            continue
+            
         angle_rad = np.radians(angle_deg)
         x_end = max_radius * 0.8 * np.cos(angle_rad)  # 80% of max radius
         y_end = max_radius * 0.8 * np.sin(angle_rad)
