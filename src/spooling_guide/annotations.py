@@ -72,6 +72,14 @@ def add_hole_annotations(ax):
                     xytext=(-200, 300),  # Moved to left side to avoid overlaps
                     arrowprops=dict(arrowstyle='->', color='green'),
                     fontsize=9, color='green')
+    
+    # Arm centerline holes annotation
+    arm_centerline_coord = hole_coords['arm_centerline'][0]  # First hole (at 0°)
+    ax.annotate(f'{spec.ARM_CENTERLINE_HOLE_COUNT}× ⌀{spec.ARM_CENTERLINE_HOLE_DIAMETER} ARM CENTERLINE HOLES', 
+                xy=(arm_centerline_coord[0], arm_centerline_coord[1]),
+                xytext=(300, 100),  # Position to the right
+                arrowprops=dict(arrowstyle='->', color='orange'),
+                fontsize=9, color='orange')
 
 
 def add_arm_annotations(ax):
@@ -113,7 +121,7 @@ def add_material_notes(ax):
         f"FINISH: {spec.EDGE_FINISH}",
         f"CORNER FILLETS: R{spec.CORNER_FILLET_RADIUS} ({spec.CORNER_FILLET_COUNT} PLACES)",
         f"CONCAVE ARC: R{spec.ARM_END_ARC_RADIUS}",
-        f"TOTAL HOLES: {1 + spec.INNER_HOLE_COUNT + spec.OUTER_HOLE_COUNT}"
+        f"TOTAL HOLES: {1 + spec.INNER_HOLE_COUNT + spec.OUTER_HOLE_COUNT + spec.ARM_CENTERLINE_HOLE_COUNT}"
     ]
     
     notes_text = '\n'.join(notes)
@@ -156,6 +164,7 @@ def create_simple_legend(ax):
     legend_elements = [
         plt.Line2D([0], [0], color='black', linewidth=2, label='Main Plate'),
         plt.Line2D([0], [0], color='red', marker='o', linewidth=0, markersize=8, label='Holes'),
+        plt.Line2D([0], [0], color='orange', marker='o', linewidth=0, markersize=8, label='Arm Centerline Holes'),
         plt.Line2D([0], [0], color='blue', linewidth=2, linestyle='--', label='Outer Ring'),
         plt.Line2D([0], [0], color='green', linewidth=1, linestyle=':', label='PCD References'),
         plt.Line2D([0], [0], color='gray', linewidth=1, linestyle='-.', label='Centerlines')

@@ -130,6 +130,12 @@ def draw_hole_pattern(ax, hole_type, style_config):
         diameter = spec.OUTER_HOLE_DIAMETER  
         color = style_config['hole_color']
         label = f'Outer Holes ⌀{diameter}mm'
+        
+    elif hole_type == 'arm_centerline':
+        coords = hole_coords['arm_centerline']
+        diameter = spec.ARM_CENTERLINE_HOLE_DIAMETER
+        color = '#FF6600'  # Orange for arm centerline holes
+        label = f'Arm Centerline Holes ⌀{diameter}mm'
     
     else:
         raise ValueError(f"Unknown hole type: {hole_type}")
@@ -160,6 +166,7 @@ def draw_all_holes(ax, style_config):
     draw_hole_pattern(ax, 'central', style_config)
     draw_hole_pattern(ax, 'inner', style_config) 
     draw_hole_pattern(ax, 'outer', style_config)
+    draw_hole_pattern(ax, 'arm_centerline', style_config)
 
 
 def draw_outer_ring(ax, style_config):

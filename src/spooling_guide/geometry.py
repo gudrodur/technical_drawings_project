@@ -365,6 +365,15 @@ def calculate_hole_coordinates():
             outer_coords.append([x, y])
     holes['outer'] = np.array(outer_coords)
     
+    # Arm centerline holes (4 holes, one per arm, 30mm inward from outer ring)
+    arm_centerline_coords = []
+    for angle_deg in spec.ARM_ANGLES:
+        angle_rad = math.radians(angle_deg)
+        x = spec.ARM_CENTERLINE_HOLE_RADIUS * math.cos(angle_rad)
+        y = spec.ARM_CENTERLINE_HOLE_RADIUS * math.sin(angle_rad)
+        arm_centerline_coords.append([x, y])
+    holes['arm_centerline'] = np.array(arm_centerline_coords)
+    
     return holes
 
 
