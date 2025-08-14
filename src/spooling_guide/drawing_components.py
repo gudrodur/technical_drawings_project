@@ -109,6 +109,8 @@ def draw_hole_pattern(ax, hole_type, style_config):
         label = f'Inner Holes ⌀{diameter}mm'
         
     elif hole_type == 'outer':
+        if spec.OUTER_HOLE_COUNT == 0:
+            return  # No outer holes to draw
         coords = hole_coords['outer']
         diameter = spec.OUTER_HOLE_DIAMETER  
         color = style_config['hole_color']
@@ -290,16 +292,11 @@ def draw_centerlines(ax, style_config):
     overall_dims = geom.calculate_overall_dimensions()
     max_radius = overall_dims['overall_radius']
     
-    # Main X and Y centerlines
+    # Main X centerline only (Y centerline removed per user request)
     ax.axhline(y=0, color=style_config['centerline_color'], 
                linewidth=style_config['centerline_linewidth'],
                linestyle='-.', alpha=0.5, 
                xmin=0.1, xmax=0.9)  # Don't extend to edges
-    
-    ax.axvline(x=0, color=style_config['centerline_color'],
-               linewidth=style_config['centerline_linewidth'], 
-               linestyle='-.', alpha=0.5,
-               ymin=0.1, ymax=0.9)
     
     # Arm centerlines
     for angle_deg in spec.ARM_ANGLES:

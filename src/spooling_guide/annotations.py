@@ -64,13 +64,14 @@ def add_hole_annotations(ax):
                 arrowprops=dict(arrowstyle='->', color='blue'),
                 fontsize=9, color='blue')
     
-    # Outer holes annotation
-    outer_coord = hole_coords['outer'][0]
-    ax.annotate(f'{spec.OUTER_HOLE_COUNT}× ⌀{spec.OUTER_HOLE_DIAMETER} ON ⌀{spec.OUTER_HOLE_PCD} PCD', 
-                xy=(outer_coord[0], outer_coord[1]),
-                xytext=(-200, 300),  # Moved to left side to avoid overlaps
-                arrowprops=dict(arrowstyle='->', color='green'),
-                fontsize=9, color='green')
+    # Outer holes annotation (only if holes exist)
+    if spec.OUTER_HOLE_COUNT > 0:
+        outer_coord = hole_coords['outer'][0]
+        ax.annotate(f'{spec.OUTER_HOLE_COUNT}× ⌀{spec.OUTER_HOLE_DIAMETER} ON ⌀{spec.OUTER_HOLE_PCD} PCD', 
+                    xy=(outer_coord[0], outer_coord[1]),
+                    xytext=(-200, 300),  # Moved to left side to avoid overlaps
+                    arrowprops=dict(arrowstyle='->', color='green'),
+                    fontsize=9, color='green')
 
 
 def add_arm_annotations(ax):

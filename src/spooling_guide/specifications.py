@@ -48,10 +48,10 @@ INNER_HOLE_COUNT = 8
 INNER_HOLE_DIAMETER = 8.0  # mm
 INNER_HOLE_PCD = 90.0  # mm (Pitch Circle Diameter) - CHANGED FROM 360.0 TO MATCH MOUNTING_BRACKET/OBLONG_PLATE
 
-# Outer mounting hole pattern (4 holes aligned with arms)
-OUTER_HOLE_COUNT = 4
+# Outer mounting hole pattern (4 holes aligned with arms) - REMOVED
+OUTER_HOLE_COUNT = 0  # No outer holes
 OUTER_HOLE_DIAMETER = 8.0  # mm
-OUTER_HOLE_PCD = 990.0  # mm (Pitch Circle Diameter)
+OUTER_HOLE_PCD = 1020.0  # mm (Pitch Circle Diameter) - for overall dimension calculation
 
 # ============================================================================
 # FINISHING SPECIFICATIONS

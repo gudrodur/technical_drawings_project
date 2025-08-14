@@ -355,13 +355,14 @@ def calculate_hole_coordinates():
         inner_coords.append([x, y])
     holes['inner'] = np.array(inner_coords)
     
-    # Outer hole pattern (4 holes on 1020mm PCD, aligned with arms)
+    # Outer hole pattern (4 holes on 1020mm PCD, aligned with arms) - Handle zero holes
     outer_coords = []
-    for angle_deg in spec.OUTER_HOLE_ANGLES:
-        angle_rad = math.radians(angle_deg)
-        x = (spec.OUTER_HOLE_PCD / 2.0) * math.cos(angle_rad)
-        y = (spec.OUTER_HOLE_PCD / 2.0) * math.sin(angle_rad)
-        outer_coords.append([x, y])
+    if spec.OUTER_HOLE_COUNT > 0:
+        for angle_deg in spec.OUTER_HOLE_ANGLES:
+            angle_rad = math.radians(angle_deg)
+            x = (spec.OUTER_HOLE_PCD / 2.0) * math.cos(angle_rad)
+            y = (spec.OUTER_HOLE_PCD / 2.0) * math.sin(angle_rad)
+            outer_coords.append([x, y])
     holes['outer'] = np.array(outer_coords)
     
     return holes
