@@ -104,8 +104,8 @@ def add_material_notes(ax):
         ax: Matplotlib axes object
     """
     overall_dims = geom.calculate_overall_dimensions()
-    note_x = -overall_dims['overall_radius'] * 0.9
-    note_y = overall_dims['overall_radius'] * 0.8
+    note_x = overall_dims['overall_radius'] * 0.6   # Positive X for right side
+    note_y = overall_dims['overall_radius'] * 0.8   # Positive Y for upper area
     
     notes = [
         f"MATERIAL: {spec.MAIN_PLATE_MATERIAL}",
@@ -123,7 +123,8 @@ def add_material_notes(ax):
                      facecolor='lightblue', 
                      edgecolor='black',
                      alpha=0.9),
-            verticalalignment='top')
+            verticalalignment='top',
+            horizontalalignment='right')  # Right-align for upper-right positioning
 
 
 def add_title_block(ax):
