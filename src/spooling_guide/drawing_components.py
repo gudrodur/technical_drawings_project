@@ -38,10 +38,10 @@ def draw_central_opening(ax, style_config):
 
 def draw_single_arm(ax, arm_angle_deg, style_config):
     """
-    Draw a single arm with simplified trapezoidal geometry.
+    Draw a single arm with only left and right tapered sides.
     
-    SIMPLIFIED DESIGN: Arms are now simple trapezoids with straight-line terminations.
-    No complex concave arcs - clean geometric shapes for robust manufacturing.
+    MODIFIED DESIGN: Arms now show only the two angled side edges.
+    Inner and outer horizontal edges are eliminated per user specification.
     
     Args:
         ax: Matplotlib axes object  
@@ -51,8 +51,19 @@ def draw_single_arm(ax, arm_angle_deg, style_config):
     # Get simplified arm geometry
     arm_outline_points, concave_arc_points, fillet_data = geom.calculate_arm_vertices(arm_angle_deg)
     
-    # Draw main arm outline (simple trapezoid)
-    ax.plot(arm_outline_points[:, 0], arm_outline_points[:, 1],
+    # Draw only the left and right side edges (eliminate inner/outer horizontal edges)
+    # Points: [inner_left, outer_left, outer_right, inner_right, inner_left(close)]
+    
+    # Left side: inner_left to outer_left (index 0 to 1)
+    ax.plot([arm_outline_points[0, 0], arm_outline_points[1, 0]], 
+            [arm_outline_points[0, 1], arm_outline_points[1, 1]],
+            color=style_config['primary_color'],
+            linewidth=style_config['primary_linewidth'],
+            solid_capstyle='round')
+    
+    # Right side: outer_right to inner_right (index 2 to 3)
+    ax.plot([arm_outline_points[2, 0], arm_outline_points[3, 0]], 
+            [arm_outline_points[2, 1], arm_outline_points[3, 1]],
             color=style_config['primary_color'],
             linewidth=style_config['primary_linewidth'],
             solid_capstyle='round')
@@ -68,7 +79,7 @@ def draw_single_arm(ax, arm_angle_deg, style_config):
     # Draw R5 corner fillets (simplified - will be enhanced later)
     draw_arm_fillets(ax, fillet_data, style_config)
     
-    # Add line labels for all 4 edges of the arm
+    # Add line labels for the 2 remaining edges of the arm
     if style_config.get('show_arm_line_labels', True):
         draw_arm_line_labels(ax, arm_angle_deg, arm_outline_points, style_config)
     
@@ -273,9 +284,9 @@ def draw_arm_line_labels(ax, arm_angle_deg, arm_outline_points, style_config):
     # Define the 4 line segments of the trapezoid
     # Points: [inner_left, outer_left, outer_right, inner_right, inner_left(close)]
     lines = {
-        'inner_edge': (arm_outline_points[3], arm_outline_points[0]),  # inner_right to inner_left
+        # 'inner_edge': (arm_outline_points[3], arm_outline_points[0]),  # REMOVED per user request
         'left_side': (arm_outline_points[0], arm_outline_points[1]),   # inner_left to outer_left  
-        'outer_edge': (arm_outline_points[1], arm_outline_points[2]),  # outer_left to outer_right
+        # 'outer_edge': (arm_outline_points[1], arm_outline_points[2]),  # REMOVED per user request
         'right_side': (arm_outline_points[2], arm_outline_points[3])   # outer_right to inner_right
     }
     
