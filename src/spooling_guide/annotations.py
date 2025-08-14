@@ -147,8 +147,8 @@ def add_title_block(ax):
         ax: Matplotlib axes object
     """
     overall_dims = geom.calculate_overall_dimensions()
-    title_x = -overall_dims['overall_radius'] * 1.0  # Optimal left position
-    title_y = -overall_dims['overall_radius'] * 1.0  # Optimal down position
+    title_x = -overall_dims['overall_radius'] * 1.1  # A bit more to the left
+    title_y = -overall_dims['overall_radius'] * 1.1  # A bit more down
     
     ax.text(title_x, title_y, 
             f"{spec.DRAWING_TITLE}\n{spec.DRAWING_VIEW_NAME}\nScale: {spec.DRAWING_SCALE}",
