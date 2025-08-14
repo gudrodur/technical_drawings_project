@@ -119,14 +119,18 @@ def add_material_notes(ax):
         f"MATERIAL: {spec.MAIN_PLATE_MATERIAL}",
         f"OUTER RING: {spec.OUTER_RING_MATERIAL}",
         f"FINISH: {spec.EDGE_FINISH}",
-        f"CORNER FILLETS: R{spec.CORNER_FILLET_RADIUS} ({spec.CORNER_FILLET_COUNT} PLACES)",
-        f"CONCAVE ARC: R{spec.ARM_END_ARC_RADIUS}",
-        f"TOTAL HOLES: {1 + spec.INNER_HOLE_COUNT + spec.OUTER_HOLE_COUNT + spec.ARM_CENTERLINE_HOLE_COUNT}"
+        f"HOLE BREAKDOWN:",
+        f"  • 1× ⌀{spec.CENTRAL_HOLE_DIAMETER}mm Central Pilot Hole",
+        f"  • {spec.INNER_HOLE_COUNT}× ⌀{spec.INNER_HOLE_DIAMETER}mm Inner Holes (⌀{spec.INNER_HOLE_PCD}mm PCD)",
+        f"  • {spec.ARM_CENTERLINE_HOLE_COUNT}× ⌀{spec.ARM_CENTERLINE_HOLE_DIAMETER}mm Arm Centerline Holes",
+        f"TOTAL HOLES: {1 + spec.INNER_HOLE_COUNT + spec.OUTER_HOLE_COUNT + spec.ARM_CENTERLINE_HOLE_COUNT}",
+        f"ARM GEOMETRY: Simplified tapered design",
+        f"WELDING: Continuous fillet weld at outer ring"
     ]
     
     notes_text = '\n'.join(notes)
     ax.text(note_x, note_y, f"MANUFACTURING NOTES:\n{notes_text}",
-            fontsize=8,
+            fontsize=7,  # Reduced from 8 for better fit with detailed notes
             bbox=dict(boxstyle="round,pad=0.5", 
                      facecolor='lightblue', 
                      edgecolor='black',

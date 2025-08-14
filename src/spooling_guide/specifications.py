@@ -56,6 +56,7 @@ OUTER_HOLE_PCD = 1020.0  # mm (Pitch Circle Diameter) - for overall dimension ca
 # Arm centerline holes (4 holes, one per arm, 30mm inward from outer ring)
 ARM_CENTERLINE_HOLE_COUNT = 4
 ARM_CENTERLINE_HOLE_DIAMETER = 8.0  # mm
+# Ring center at 510mm (OUTER_HOLE_PCD/2), so 30mm inward = 510-30 = 480mm
 ARM_CENTERLINE_HOLE_RADIUS = 480.0  # mm (30mm inward from ring center at 510mm)
 
 # ============================================================================
