@@ -68,6 +68,10 @@ def draw_single_arm(ax, arm_angle_deg, style_config):
     # Draw R5 corner fillets (simplified - will be enhanced later)
     draw_arm_fillets(ax, fillet_data, style_config)
     
+    # Add line labels for all 4 edges of the arm
+    if style_config.get('show_arm_line_labels', True):
+        draw_arm_line_labels(ax, arm_angle_deg, arm_outline_points, style_config)
+    
     # Optional: Draw construction lines for visualization
     if style_config.get('show_construction_lines', False):
         draw_arm_construction_lines(ax, arm_angle_deg, style_config)
@@ -254,6 +258,66 @@ def draw_arm_fillets(ax, fillet_data, style_config):
                     color=style_config['centerline_color'],
                     markersize=2,
                     alpha=0.6)
+
+
+def draw_arm_line_labels(ax, arm_angle_deg, arm_outline_points, style_config):
+    """
+    Add labels to all 4 lines of a trapezoidal arm for technical documentation.
+    
+    Args:
+        ax: Matplotlib axes object
+        arm_angle_deg: Arm centerline angle in degrees
+        arm_outline_points: Array of 5 points defining the trapezoid (closed shape)
+        style_config: Dictionary containing styling parameters
+    """
+    # Define the 4 line segments of the trapezoid
+    # Points: [inner_left, outer_left, outer_right, inner_right, inner_left(close)]
+    lines = {
+        'inner_edge': (arm_outline_points[3], arm_outline_points[0]),  # inner_right to inner_left
+        'left_side': (arm_outline_points[0], arm_outline_points[1]),   # inner_left to outer_left  
+        'outer_edge': (arm_outline_points[1], arm_outline_points[2]),  # outer_left to outer_right
+        'right_side': (arm_outline_points[2], arm_outline_points[3])   # outer_right to inner_right
+    }
+    
+    # Calculate label positions at midpoints of each line
+    arm_id = int(arm_angle_deg / 90) + 1  # Arm 1-4 based on angle (0°=1, 90°=2, etc.)
+    
+    for line_name, (start_point, end_point) in lines.items():
+        # Calculate midpoint
+        mid_x = (start_point[0] + end_point[0]) / 2
+        mid_y = (start_point[1] + end_point[1]) / 2
+        
+        # Generate label text
+        label_text = f"ARM-{arm_id}-{line_name.upper().replace('_', '')}"
+        
+        # Offset label position to avoid overlap with line
+        offset_distance = 15
+        angle_rad = np.radians(arm_angle_deg)
+        
+        # Calculate perpendicular offset direction for readability
+        if 'inner' in line_name or 'outer' in line_name:
+            # For horizontal edges, offset vertically
+            offset_x = mid_x + offset_distance * np.sin(angle_rad)
+            offset_y = mid_y - offset_distance * np.cos(angle_rad)
+        else:
+            # For side edges, offset perpendicular to arm direction
+            if 'left' in line_name:
+                offset_x = mid_x - offset_distance * np.sin(angle_rad) 
+                offset_y = mid_y - offset_distance * np.cos(angle_rad)
+            else:  # right side
+                offset_x = mid_x + offset_distance * np.sin(angle_rad)
+                offset_y = mid_y + offset_distance * np.cos(angle_rad)
+        
+        # Add text label
+        ax.text(offset_x, offset_y, label_text,
+                fontsize=7, fontweight='bold',
+                color='purple', alpha=0.8,
+                ha='center', va='center',
+                bbox=dict(boxstyle="round,pad=0.2", 
+                         facecolor='white', 
+                         edgecolor='purple',
+                         alpha=0.7),
+                rotation=arm_angle_deg if abs(arm_angle_deg) < 45 or abs(arm_angle_deg) > 135 else 0)
 
 
 def draw_arm_construction_lines(ax, arm_angle_deg, style_config):

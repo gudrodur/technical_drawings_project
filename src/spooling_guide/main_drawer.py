@@ -100,7 +100,10 @@ def create_style_configuration():
         # Legend and layout
         'legend_font_size': 9,
         'background_color': '#FFFFFF',     # White background
-        'grid_alpha': 0.3
+        'grid_alpha': 0.3,
+        
+        # Arm line labeling
+        'show_arm_line_labels': True,      # Enable arm line identification
     }
 
 
