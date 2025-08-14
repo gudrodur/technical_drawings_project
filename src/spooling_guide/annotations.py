@@ -112,8 +112,8 @@ def add_material_notes(ax):
         ax: Matplotlib axes object
     """
     overall_dims = geom.calculate_overall_dimensions()
-    note_x = overall_dims['overall_radius'] * 1.0   # A bit more to the right
-    note_y = overall_dims['overall_radius'] * 1.0   # Further up
+    note_x = overall_dims['overall_radius'] * 1.1   # Move further right
+    note_y = overall_dims['overall_radius'] * 1.1   # Move further up
     
     notes = [
         f"MATERIAL: {spec.MAIN_PLATE_MATERIAL}",
