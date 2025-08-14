@@ -86,5 +86,5 @@ INNER_HOLE_ANGLES = [i * INNER_HOLE_ANGULAR_SPACING for i in range(INNER_HOLE_CO
 # DRAWING SPECIFICATIONS
 # ============================================================================
 DRAWING_SCALE = "1:10"  # Recommended scale for this large component
-DRAWING_TITLE = "LÍNUSTÝRING (SPOOLING GUIDE PLATE)"
+DRAWING_TITLE = "SPOOLING GUIDE PLATE"
 DRAWING_VIEW_NAME = "2D Technical Drawing - Side View"
