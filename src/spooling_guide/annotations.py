@@ -130,7 +130,7 @@ def add_material_notes(ax):
     
     notes_text = '\n'.join(notes)
     ax.text(note_x, note_y, f"MANUFACTURING NOTES:\n{notes_text}",
-            fontsize=7,  # Reduced from 8 for better fit with detailed notes
+            fontsize=10,  # Increased from 7 for better readability
             bbox=dict(boxstyle="round,pad=0.5", 
                      facecolor='lightblue', 
                      edgecolor='black',
