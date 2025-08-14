@@ -103,7 +103,7 @@ def create_style_configuration():
         'grid_alpha': 0.3,
         
         # Arm line labeling
-        'show_arm_line_labels': True,      # Enable arm line identification
+        'show_arm_line_labels': False,     # Disable arm line identification
     }
 
 

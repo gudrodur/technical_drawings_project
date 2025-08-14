@@ -178,7 +178,7 @@ def add_all_annotations(ax, style_config):
     """
     add_basic_dimensions(ax)
     add_hole_annotations(ax)
-    add_arm_annotations(ax)
+    # add_arm_annotations(ax)  # REMOVED per user request
     add_material_notes(ax)
     add_title_block(ax)
     create_simple_legend(ax)
